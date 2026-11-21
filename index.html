@@ -8,31 +8,62 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --primary: #ff8da1; /* 파스텔 핑크 */
-      --primary-soft: #fff0f3;
-      --bg: #faf7f8;
+      /* 🌸 화사한 톤다운 로즈 핑크 테마 */
+      --bg: #fcf9fa;
       --card-bg: #ffffff;
-      --text: #2d3748;
-      --text-muted: #718096;
-      --border: #f0e6e8;
+      --border: #f2e2e6;
+      --border-strong: #deb8c2;
+      
+      --primary: #e58c9d;
+      --primary-hover: #d9788b;
+      --primary-soft: #fbf0f3;
+      --primary-pill: #f7dfe5;
+      
+      /* 선명한 텍스트 */
+      --rose-deep: #43282f;
+      --rose-medium: #784c56;
+      --rose-muted: #8a7178;
+      
+      /* 조금 더 톤다운된 어두운 핑크 (링크용) */
+      --rose-link: #b85d72;
+
+      /* 공통 내용 박스 배경 및 테두리 */
+      --box-inner-bg: #faf8f9;
+      --box-inner-border: #f4e9ec;
+
+      /* 책갈피 컬러 팔레트 */
+      --bm-none: #e2dbdd;
+      --bm-pink: #f29bb0;
+      --bm-rose: #d66882;
+      --bm-yellow: #f5cb6c;
+      --bm-mint: #86cdb5;
+      --bm-lavender: #bfa3e3;
+
+      /* 중요 별 컬러 */
+      --star-active: #f1a80a;
+      --star-inactive: #d6ccd0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
       background-color: var(--bg);
-      color: var(--text);
-      padding: 8px 6px;
+      color: var(--rose-deep);
+      padding: 12px 8px;
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* 🔒 비밀번호 잠금 화면 모달 */
+    /* 비밀번호 잠금 화면 모달 */
     #lock-screen {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(250, 247, 248, 0.95);
+      background: rgba(252, 249, 250, 0.96);
       backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
@@ -41,34 +72,36 @@
     }
     .lock-box {
       background: white;
-      padding: 24px 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(255, 141, 161, 0.25);
-      border: 1.5px solid #ffd1dc;
+      padding: 30px 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(229, 140, 157, 0.16);
+      border: 1.5px solid var(--border-strong);
       text-align: center;
       width: 90%;
-      max-width: 320px;
+      max-width: 330px;
     }
     .lock-box h2 {
-      font-size: 1.15rem;
-      color: #d85a7f;
-      margin-bottom: 6px;
+      font-size: 1.3rem;
+      color: var(--rose-deep);
+      margin-bottom: 8px;
+      font-weight: 800;
     }
     .lock-box p {
-      font-size: 0.8rem;
-      color: #718096;
-      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--rose-muted);
+      margin-bottom: 18px;
     }
     .pin-input {
-      width: 140px;
+      width: 150px;
       text-align: center;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       letter-spacing: 8px;
-      padding: 8px 10px;
-      border: 1.5px solid #ffd1dc;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-strong);
       border-radius: 8px;
       outline: none;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      color: var(--rose-deep);
     }
     .pin-input:focus {
       border-color: var(--primary);
@@ -76,175 +109,279 @@
 
     .container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       background: var(--card-bg);
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(255, 141, 161, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 3px 18px rgba(229, 140, 157, 0.09);
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1.2px solid var(--border);
+      display: flex;
+      flex-direction: column;
     }
 
-    /* 헤더 */
+    /* 상단 헤더 */
     header {
       position: relative;
-      padding: 10px 12px 8px;
-      text-align: center;
+      padding: 16px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: linear-gradient(180deg, #ffffff 0%, var(--primary-soft) 100%);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1.2px solid var(--border);
+    }
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
     }
     header h1 {
-      font-size: 1.15rem;
-      color: #1a202c;
-      margin-bottom: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+      font-size: 1.3rem;
+      color: var(--rose-deep);
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
     header p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      font-size: 0.82rem;
+      color: var(--rose-muted);
     }
     .logout-btn {
-      position: absolute;
-      top: 10px;
-      right: 12px;
       background: white;
-      border: 1px solid #ffd1dc;
-      color: #d85a7f;
-      font-size: 0.7rem;
-      padding: 3px 8px;
+      border: 1px solid var(--border-strong);
+      color: var(--rose-medium);
+      font-size: 0.8rem;
+      padding: 4px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .logout-btn:hover {
+      background: var(--primary-soft);
     }
 
-    /* 🗺️ 로드맵 (반응형) */
+    /* 대시보드 레이아웃 */
+    .dashboard-layout {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    /* 로드맵 공통 */
     .roadmap-card {
-      background: white;
-      border-radius: 10px;
-      padding: 8px 10px;
-      box-shadow: 0 1px 6px rgba(255, 183, 197, 0.15);
-      border: 1.2px solid #ffd1dc;
-      margin: 8px 8px 4px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1.2px solid var(--border);
+      margin: 10px 10px 4px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
     }
     .roadmap-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
-      border-bottom: 1px dashed #ffe4e9;
-      padding-bottom: 4px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
     }
     .roadmap-title {
-      font-size: 0.82rem;
-      font-weight: bold;
-      color: #d85a7f;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--rose-deep);
     }
     .roadmap-badge {
-      font-size: 0.7rem;
-      background: #ffe4e9;
-      color: #d85a7f;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: bold;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
     }
+
+    /* 모바일 가로 로드맵 */
     .roadmap-steps {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 5px;
       overflow-x: auto;
-      padding-bottom: 2px;
+      padding: 2px 0;
     }
     .step-box {
       flex: 1;
       min-width: 95px;
-      border-radius: 6px;
-      padding: 5px 6px;
+      border-radius: 8px;
+      padding: 8px 6px;
       text-align: center;
     }
+    .step-1 {
+      background: #ffffff;
+      border: 1.2px solid var(--border);
+    }
+    .step-2 {
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(229, 140, 157, 0.15);
+    }
+    .step-inactive {
+      background: #faf8f9;
+      border: 1px solid #f0e6e8;
+    }
     .step-arrow {
-      color: #ffd1dc;
-      font-size: 0.75rem;
-      font-weight: bold;
+      color: #d8c3c7;
+      font-size: 0.85rem;
       user-select: none;
     }
     .step-label {
-      font-size: 0.62rem;
-      font-weight: bold;
+      font-size: 0.68rem;
+      font-weight: 800;
     }
     .step-name {
-      font-size: 0.75rem;
-      font-weight: bold;
-      margin-top: 1px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-top: 2px;
     }
     .step-desc {
       display: none;
-      font-size: 0.7rem;
-      color: #718096;
+      font-size: 0.72rem;
+      color: var(--rose-muted);
       margin-top: 2px;
     }
 
-    /* 탭 바 */
+    /* 우측 작업 보드 */
+    .board-section {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 탭 메뉴 바 */
     .tab-bar {
       display: flex;
-      background: #fdf2f4;
-      padding: 3px;
-      gap: 3px;
+      background: var(--primary-soft);
+      padding: 5px;
+      gap: 4px;
+      border-top: 1.2px solid var(--border);
+      border-bottom: 1.2px solid var(--border);
       overflow-x: auto;
     }
     .tab-btn {
       flex: 1;
-      min-width: 75px;
-      padding: 7px 4px;
+      min-width: 80px;
+      padding: 10px 6px;
       border: none;
       background: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #a0aec0;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--rose-medium);
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
       white-space: nowrap;
     }
     .tab-btn.active {
       background: white;
-      color: var(--primary);
-      box-shadow: 0 1px 5px rgba(255, 141, 161, 0.16);
+      color: var(--rose-deep);
+      box-shadow: 0 1px 5px rgba(229, 140, 157, 0.12);
+      font-weight: 800;
     }
 
+    /* 본문 영역 */
     .tab-content {
       display: none;
-      padding: 12px 10px;
+      padding: 16px 14px;
     }
     .tab-content.active {
       display: block;
     }
 
-    /* 입력 요소 */
-    .form-group {
+    /* 리스트 상단 컨트롤 바 */
+    .list-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
       margin-bottom: 8px;
+      padding: 0 2px;
+      gap: 8px;
+    }
+    .list-filter-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-filter-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.12);
+      transition: transform 0.15s;
+    }
+    .dot-filter-btn:hover {
+      transform: scale(1.3);
+    }
+    .dot-filter-btn.active {
+      outline: 2px solid var(--rose-deep);
+      outline-offset: 1px;
+    }
+    .dot-all-btn {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--rose-medium);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2px 7px;
+      cursor: pointer;
+      margin-right: 2px;
+      transition: all 0.15s;
+    }
+    .dot-all-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .sort-text-btn {
+      background: none;
+      border: none;
+      color: var(--rose-medium);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 2px 4px;
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .sort-text-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* 입력 폼 공통 */
+    .form-group {
+      margin-bottom: 10px;
     }
     .form-group label {
       display: block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      margin-bottom: 3px;
-      color: #4a5568;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--rose-deep);
     }
     input[type="text"], input[type="date"], input[type="url"], textarea {
       width: 100%;
-      padding: 7px 10px;
-      border: 1.2px solid var(--border);
-      border-radius: 7px;
-      font-size: 0.85rem;
+      padding: 9px 12px;
+      border: 1.2px solid var(--border-strong);
+      border-radius: 8px;
+      font-size: 0.92rem;
       font-family: inherit;
       outline: none;
       background: #fff;
+      color: var(--rose-deep);
       transition: border 0.2s;
     }
     input:focus, textarea:focus {
@@ -252,181 +389,428 @@
     }
     textarea {
       resize: vertical;
-      min-height: 55px;
+      min-height: 65px;
+      line-height: 1.5;
     }
 
-    /* 핑크 버튼 */
-    .pink-btn {
-      width: 100%;
-      padding: 8px 12px;
+    /* 버튼 스타일 */
+    .rose-btn {
+      padding: 8px 18px;
       background: var(--primary);
-      color: white;
+      color: #ffffff;
       border: none;
       border-radius: 7px;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 6px rgba(255, 141, 161, 0.2);
+      transition: all 0.15s;
+      box-shadow: 0 2px 6px rgba(229, 140, 157, 0.25);
     }
-    .pink-btn:hover {
-      filter: brightness(0.96);
+    .rose-btn:hover {
+      background: var(--primary-hover);
     }
 
     .list-container {
-      margin-top: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
-    /* PC 전용 스타일 (너비 768px 이상) */
+    /* 카드 책갈피 바 스타일 */
+    .card-item {
+      position: relative;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .card-bookmark-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 5px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+      background-color: var(--bm-none);
+    }
+    .color-picker-mini {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .color-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.1);
+      transition: transform 0.1s;
+    }
+    .color-dot:hover {
+      transform: scale(1.25);
+    }
+
+    /* 중요 별(Star) 토글 버튼 */
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 1.12rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 1px;
+      color: var(--star-inactive);
+      transition: color 0.15s, transform 0.15s;
+    }
+    .star-btn.active {
+      color: var(--star-active);
+    }
+    .star-btn:hover {
+      transform: scale(1.2);
+    }
+
+    /* 통일된 체크박스 디자인 */
+    .custom-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 17px;
+      height: 17px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+      display: inline-grid;
+      place-content: center;
+      transition: all 0.15s ease-in-out;
+      margin-bottom: 2px;
+      flex-shrink: 0;
+    }
+    .custom-check:checked {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    .custom-check:checked::before {
+      content: "";
+      width: 8px;
+      height: 5px;
+      border-left: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    /* 공통 슬림 내용 박스: 위아래 높이 글씨크기에 맞춤 + 좌측 3칸 띄움(1.2em) */
+    .styled-content-box {
+      background: var(--box-inner-bg);
+      border: 1px solid var(--box-inner-border);
+      border-radius: 6px;
+      padding: 5px 10px 5px 1.2em; /* 위아래 슬림, 좌측 글자 3칸 여백 */
+      color: var(--rose-deep);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ========================================================
+       💻 PC 전용 스타일 (너비 768px 이상)
+       ======================================================== */
     @media (min-width: 768px) {
-      body { padding: 24px 16px; }
+      body { padding: 28px 20px; }
       .container { border-radius: 18px; }
-      header { padding: 20px 20px 14px; }
-      header h1 { font-size: 1.45rem; }
-      header p { font-size: 0.88rem; }
-      .logout-btn { top: 16px; right: 18px; font-size: 0.75rem; padding: 4px 10px; }
+      header { padding: 20px 24px; }
+      header h1 { font-size: 1.5rem; }
+      header p { font-size: 0.9rem; }
+      .logout-btn { font-size: 0.85rem; padding: 5px 12px; }
 
-      .roadmap-card { padding: 16px 20px; margin: 14px 16px 8px; border-radius: 14px; }
-      .roadmap-header { margin-bottom: 12px; padding-bottom: 8px; }
-      .roadmap-title { font-size: 1.05rem; }
-      .roadmap-badge { font-size: 0.82rem; padding: 4px 12px; }
-      .roadmap-steps { gap: 10px; }
-      .step-box { min-width: 140px; padding: 12px 14px; border-radius: 10px; }
+      .dashboard-layout {
+        flex-direction: row;
+        align-items: stretch;
+      }
+
+      .roadmap-card {
+        width: 250px;
+        min-width: 240px;
+        margin: 18px 0 18px 18px;
+        border-radius: 14px;
+        padding: 16px 14px;
+        border-right: 1.2px solid var(--border);
+      }
+      .roadmap-header {
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+      }
+      .roadmap-title { font-size: 1rem; }
+      .roadmap-badge { font-size: 0.78rem; padding: 3px 8px; }
+
+      .roadmap-steps {
+        flex-direction: column;
+        gap: 8px;
+        overflow-x: visible;
+      }
+      .step-box {
+        width: 100%;
+        min-width: unset;
+        padding: 12px 14px;
+        text-align: left;
+        border-radius: 10px;
+      }
       .step-label { font-size: 0.72rem; }
-      .step-name { font-size: 0.95rem; margin-top: 3px; }
-      .step-desc { display: block; }
-      .step-arrow { font-size: 1.1rem; }
+      .step-name { font-size: 0.92rem; margin-top: 3px; }
+      .step-desc { display: block; font-size: 0.78rem; margin-top: 2px; }
+      .step-arrow {
+        transform: rotate(90deg);
+        font-size: 0.95rem;
+        margin: 1px 0;
+      }
 
-      .tab-bar { padding: 5px; gap: 5px; }
-      .tab-btn { padding: 10px 8px; font-size: 0.92rem; border-radius: 10px; }
-      .tab-content { padding: 20px 18px; }
-      input[type="text"], input[type="date"], input[type="url"], textarea { padding: 9px 12px; font-size: 0.92rem; }
-      .pink-btn { padding: 10px 16px; font-size: 0.92rem; }
+      .board-section {
+        border-left: 1.2px solid var(--border);
+        margin: 18px 18px 18px 0;
+        background: #fff;
+        border-top-right-radius: 14px;
+        border-bottom-right-radius: 14px;
+      }
+      .tab-bar {
+        border-top: none;
+        padding: 6px 14px;
+        gap: 6px;
+      }
+      .tab-btn {
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        border-radius: 9px;
+      }
+      .tab-content { padding: 22px 20px; }
     }
   </style>
 </head>
 <body>
 
-<!-- 🔒 비밀번호 입력 팝업 화면 -->
+<!-- 비밀번호 입력 팝업 화면 -->
 <div id="lock-screen">
   <div class="lock-box">
-    <h2>🔒 PROJECT-0</h2>
-    <p>우리 팀 4자리 비밀번호를 입력해주세요.</p>
+    <h2>PROJECT-0</h2>
+    <p>팀 4자리 비밀번호를 입력해주세요.</p>
     <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" onkeypress="handlePinKey(event)" autofocus>
-    <button class="pink-btn" onclick="checkPin()">접속하기</button>
+    <button class="rose-btn" style="width: 100%; padding: 10px;" onclick="checkPin()">접속하기</button>
   </div>
 </div>
 
 <div class="container" id="app-container" style="display: none;">
+  <!-- 상단 헤더 -->
   <header>
-    <h1>🌸 PROJECT-0</h1>
-    <p>2인 기획·개발 협업 대시보드</p>
+    <div class="header-left">
+      <h1>🌸 PROJECT-0</h1>
+      <p>2인 기획·개발 협업 대시보드</p>
+    </div>
     <button class="logout-btn" onclick="logout()">🔒 잠금</button>
   </header>
 
-  <!-- 🗺️ 반응형 로드맵 -->
-  <div class="roadmap-card">
-    <div class="roadmap-header">
-      <span class="roadmap-title">🗺️ 프로젝트 로드맵</span>
-      <span class="roadmap-badge">STEP 2 진행 중 🚀</span>
+  <!-- 대시보드 레이아웃 -->
+  <div class="dashboard-layout">
+    
+    <!-- 로드맵 -->
+    <div class="roadmap-card">
+      <div class="roadmap-header">
+        <span class="roadmap-title">프로젝트 로드맵</span>
+        <span class="roadmap-badge">STEP 2 진행</span>
+      </div>
+
+      <div class="roadmap-steps">
+        <div class="step-box step-1">
+          <div class="step-label" style="color: var(--rose-medium);">STEP 1 완료</div>
+          <div class="step-name" style="color: var(--rose-deep);">기반 환경 구축</div>
+          <div class="step-desc">배포 & 모바일 연동</div>
+        </div>
+        <span class="step-arrow">➜</span>
+
+        <div class="step-box step-2">
+          <div class="step-label" style="color: var(--primary);">STEP 2 진행 🚀</div>
+          <div class="step-name" style="color: var(--rose-deep);">협업 보드 확장</div>
+          <div class="step-desc">메뉴 탭 & 실시간 기록</div>
+        </div>
+        <span class="step-arrow">➜</span>
+
+        <div class="step-box step-inactive">
+          <div class="step-label" style="color: #999;">STEP 3</div>
+          <div class="step-name" style="color: #777;">데이터 보관소</div>
+          <div class="step-desc">자료 & 영상 아카이빙</div>
+        </div>
+        <span class="step-arrow">➜</span>
+
+        <div class="step-box step-inactive">
+          <div class="step-label" style="color: #bbb;">STEP 4</div>
+          <div class="step-name" style="color: #999;">핵심 기능 개발</div>
+          <div class="step-desc">본격 기능 구현·테스트</div>
+        </div>
+      </div>
     </div>
 
-    <div class="roadmap-steps">
-      <div class="step-box" style="background: #f0fbf4; border: 1.2px solid #b7eec9;">
-        <div class="step-label" style="color: #27ae60;">STEP 1 ✅</div>
-        <div class="step-name" style="color: #2d3436;">기반 환경 구축</div>
-        <div class="step-desc">배포 & 모바일 연동</div>
+    <!-- 우측 메인 작업 영역 -->
+    <div class="board-section">
+      <!-- 탭 메뉴 바 -->
+      <div class="tab-bar">
+        <button id="btn-t" class="tab-btn active" onclick="switchTab('tasks')">진행목록</button>
+        <button id="btn-m" class="tab-btn" onclick="switchTab('meetings')">회의록</button>
+        <button id="btn-i" class="tab-btn" onclick="switchTab('ideas')">아이디어</button>
+        <button id="btn-r" class="tab-btn" onclick="switchTab('resources')">자료 링크</button>
       </div>
-      <span class="step-arrow" style="color: #ffb7c5;">➜</span>
-      <div class="step-box" style="background: #fff0f3; border: 1.5px solid #ff8fa3; box-shadow: 0 2px 6px rgba(216,90,127,0.12);">
-        <div class="step-label" style="color: #d85a7f;">STEP 2 🚀</div>
-        <div class="step-name" style="color: #d85a7f; font-weight: 800;">협업 보드 확장</div>
-        <div class="step-desc" style="color: #7f5262;">메뉴 탭 & 실시간 기록</div>
+
+      <!-- 1. 진행목록 화면 (슬림 박스 + 좌측 3칸 여백) -->
+      <div id="tab-tasks" class="tab-content active">
+        <div style="background: white; border-radius: 10px; padding: 14px 16px; border: 1.2px solid var(--border); margin-bottom: 8px;">
+          <h3 style="color: var(--rose-deep); margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800;">새 작업 등록</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" id="task-input" placeholder="새 작업을 입력하세요..." style="flex: 2; min-width: 160px;" onkeypress="handleTaskKey(event)">
+            <input type="text" id="task-author" placeholder="작성자" style="flex: 0.8; min-width: 90px;">
+            <button class="rose-btn" style="width: auto; padding: 9px 20px;" onclick="addTask()">추가</button>
+          </div>
+        </div>
+
+        <div class="list-header-bar">
+          <div></div>
+          <button class="sort-text-btn" onclick="toggleSort('tasks')">
+            <span id="sort-label-tasks">최신순 ⬇</span>
+          </button>
+        </div>
+
+        <div class="list-container" id="tasks-list"></div>
       </div>
-      <span class="step-arrow">➜</span>
-      <div class="step-box" style="background: #fbfbfb; border: 1px solid #e0e0e0;">
-        <div class="step-label" style="color: #95a5a6;">STEP 3</div>
-        <div class="step-name" style="color: #7f8c8d;">데이터 보관소</div>
-        <div class="step-desc">자료 & 영상 아카이빙</div>
+
+      <!-- 2. 회의록 탭 (슬림 박스 + 좌측 3칸 여백) -->
+      <div id="tab-meetings" class="tab-content">
+        <div style="background: white; border-radius: 10px; padding: 14px 16px; border: 1.2px solid var(--border); display: flex; flex-direction: column;">
+          <h3 style="color: var(--rose-deep); margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800;">회의록 작성</h3>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 140px;">
+              <label for="m-date" style="display:block; font-size:0.78rem; font-weight:800; margin-bottom:3px; color:var(--rose-deep);">회의 날짜</label>
+              <input type="date" id="m-date">
+            </div>
+            <div style="flex: 1; min-width: 140px;">
+              <label for="m-author" style="display:block; font-size:0.78rem; font-weight:800; margin-bottom:3px; color:var(--rose-deep);">작성자</label>
+              <input type="text" id="m-author" placeholder="작성자 이름">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="m-content">회의 내용</label>
+            <textarea id="m-content" placeholder="통화나 회의에서 논의된 주요 내용을 자유롭게 기록하세요..."></textarea>
+          </div>
+          <button class="rose-btn" style="align-self: flex-end; width: auto; padding: 8px 22px;" onclick="addMeeting()">회의록 저장</button>
+        </div>
+
+        <div class="list-header-bar">
+          <div></div>
+          <button class="sort-text-btn" onclick="toggleSort('meetings')">
+            <span id="sort-label-meetings">최신순 ⬇</span>
+          </button>
+        </div>
+
+        <div class="list-container" id="meetings-list"></div>
       </div>
-      <span class="step-arrow" style="color: #eee;">➜</span>
-      <div class="step-box" style="background: #fbfbfb; border: 1px solid #e0e0e0;">
-        <div class="step-label" style="color: #bdc3c7;">STEP 4</div>
-        <div class="step-name" style="color: #95a5a6;">핵심 기능 개발</div>
-        <div class="step-desc">본격 기능 구현·테스트</div>
+
+      <!-- 3. 아이디어 탭 (슬림 박스 적용 + 작성자를 날짜 오른쪽에 배치) -->
+      <div id="tab-ideas" class="tab-content">
+        <div style="background: white; border-radius: 10px; padding: 14px 16px; border: 1.2px solid var(--border);">
+          <h3 style="color: var(--rose-deep); margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800;">아이디어 메모</h3>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input type="text" id="idea-title" placeholder="아이디어 제목 또는 키워드" style="flex: 1.6; min-width: 150px;">
+              <input type="text" id="idea-author" placeholder="작성자" style="flex: 1; min-width: 100px;">
+            </div>
+            <textarea id="idea-desc" rows="3" placeholder="자유로운 생각, 아이디어 상세 메모..."></textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--rose-muted);">책갈피:</span>
+                <input type="hidden" id="idea-color" value="none">
+                <div class="color-picker-mini" id="idea-color-picker">
+                  <div class="color-dot" style="background: var(--bm-none); transform: scale(1.35);" onclick="selectNewIdeaColor('none', this)" title="기본"></div>
+                  <div class="color-dot" style="background: var(--bm-pink);" onclick="selectNewIdeaColor('pink', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-rose);" onclick="selectNewIdeaColor('rose', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-yellow);" onclick="selectNewIdeaColor('yellow', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-mint);" onclick="selectNewIdeaColor('mint', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-lavender);" onclick="selectNewIdeaColor('lavender', this)"></div>
+                </div>
+              </div>
+              <button class="rose-btn" style="width: auto; padding: 8px 22px;" onclick="addIdea()">메모 남기기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-header-bar">
+          <div class="list-filter-dots">
+            <button class="dot-all-btn active" onclick="setFilter('ideas', 'all', this)">전체</button>
+            <div class="dot-filter-btn" style="background: var(--bm-pink);" onclick="setFilterDot('ideas', 'pink', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-rose);" onclick="setFilterDot('ideas', 'rose', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-yellow);" onclick="setFilterDot('ideas', 'yellow', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-mint);" onclick="setFilterDot('ideas', 'mint', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-lavender);" onclick="setFilterDot('ideas', 'lavender', this)"></div>
+          </div>
+          <button class="sort-text-btn" onclick="toggleSort('ideas')">
+            <span id="sort-label-ideas">최신순 ⬇</span>
+          </button>
+        </div>
+
+        <div class="list-container" id="ideas-list"></div>
+      </div>
+
+      <!-- 4. 자료 링크 탭 (슬림 박스 + 공유링크를 날짜 위에 배치 + 작성자를 날짜 오른쪽에 배치) -->
+      <div id="tab-resources" class="tab-content">
+        <div style="background: white; border-radius: 10px; padding: 14px 16px; border: 1.2px solid var(--border);">
+          <h3 style="color: var(--rose-deep); margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800;">자료 및 링크 보관</h3>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input type="text" id="res-title" placeholder="자료 이름 (예: 1회차 회의 녹화)" style="flex: 1.3; min-width: 140px;">
+              <input type="text" id="res-author" placeholder="작성자" style="flex: 0.8; min-width: 90px;">
+              <input type="url" id="res-url" placeholder="공유 링크 (https://...)" style="flex: 1.5; min-width: 170px;">
+            </div>
+            <textarea id="res-desc" rows="2" placeholder="자료에 대한 세부내용 및 참고 메모"></textarea>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--rose-muted);">책갈피:</span>
+                <input type="hidden" id="res-color" value="none">
+                <div class="color-picker-mini" id="res-color-picker">
+                  <div class="color-dot" style="background: var(--bm-none); transform: scale(1.35);" onclick="selectNewResColor('none', this)" title="기본"></div>
+                  <div class="color-dot" style="background: var(--bm-pink);" onclick="selectNewResColor('pink', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-rose);" onclick="selectNewResColor('rose', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-yellow);" onclick="selectNewResColor('yellow', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-mint);" onclick="selectNewResColor('mint', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-lavender);" onclick="selectNewResColor('lavender', this)"></div>
+                </div>
+              </div>
+              <button class="rose-btn" style="width: auto; padding: 8px 22px;" onclick="addResource()">링크 저장</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-header-bar">
+          <div class="list-filter-dots">
+            <button class="dot-all-btn active" onclick="setFilter('resources', 'all', this)">전체</button>
+            <div class="dot-filter-btn" style="background: var(--bm-pink);" onclick="setFilterDot('resources', 'pink', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-rose);" onclick="setFilterDot('resources', 'rose', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-yellow);" onclick="setFilterDot('resources', 'yellow', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-mint);" onclick="setFilterDot('resources', 'mint', this)"></div>
+            <div class="dot-filter-btn" style="background: var(--bm-lavender);" onclick="setFilterDot('resources', 'lavender', this)"></div>
+          </div>
+          <button class="sort-text-btn" onclick="toggleSort('resources')">
+            <span id="sort-label-resources">최신순 ⬇</span>
+          </button>
+        </div>
+
+        <div class="list-container" id="resources-list"></div>
       </div>
     </div>
-  </div>
 
-  <!-- 🌸 탭 메뉴 바 -->
-  <div class="tab-bar">
-    <button id="btn-t" class="tab-btn active" onclick="switchTab('tasks')">✅ 진행목록</button>
-    <button id="btn-m" class="tab-btn" onclick="switchTab('meetings')">📋 회의록</button>
-    <button id="btn-i" class="tab-btn" onclick="switchTab('ideas')">💡 아이디어</button>
-    <button id="btn-r" class="tab-btn" onclick="switchTab('resources')">📁 자료 링크</button>
-  </div>
-
-  <!-- 1. 프로젝트 진행목록 화면 -->
-  <div id="tab-tasks" class="tab-content active">
-    <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-      <input type="text" id="task-input" placeholder="새 작업을 입력하세요..." style="flex: 1;" onkeypress="handleTaskKey(event)">
-      <button class="pink-btn" style="width: auto; padding: 7px 16px;" onclick="addTask()">추가</button>
-    </div>
-    <div class="list-container" id="tasks-list"></div>
-  </div>
-
-  <!-- 2. 회의록 탭 -->
-  <div id="tab-meetings" class="tab-content">
-    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
-      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">📝 회의록 작성</h3>
-      <div class="form-group">
-        <label for="m-date">회의 날짜</label>
-        <input type="date" id="m-date">
-      </div>
-      <div class="form-group">
-        <label for="m-content">회의 내용</label>
-        <textarea id="m-content" placeholder="통화/회의에서 나온 주요 내용을 간단히 적어보세요..."></textarea>
-      </div>
-      <button class="pink-btn" onclick="addMeeting()">회의록 저장</button>
-    </div>
-    <div class="list-container" id="meetings-list"></div>
-  </div>
-
-  <!-- 3. 아이디어 / 메모 탭 -->
-  <div id="tab-ideas" class="tab-content">
-    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
-      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">💡 아이디어 메모</h3>
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <input type="text" id="idea-title" placeholder="아이디어 제목 또는 키워드">
-        <textarea id="idea-desc" rows="2" placeholder="자유로운 생각, 아이디어 상세 메모..."></textarea>
-        <button class="pink-btn" style="align-self: flex-end; width: auto; padding: 7px 18px;" onclick="addIdea()">메모 남기기</button>
-      </div>
-    </div>
-    <div class="list-container" id="ideas-list"></div>
-  </div>
-
-  <!-- 4. 자료 & 녹화 링크 탭 -->
-  <div id="tab-resources" class="tab-content">
-    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
-      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">📁 자료 & 녹화 링크 보관</h3>
-      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-        <input type="text" id="res-title" placeholder="자료 이름 (예: 1회차 녹화)" style="flex: 1; min-width: 140px;">
-        <input type="url" id="res-url" placeholder="공유 링크 (https://...)" style="flex: 1.5; min-width: 180px;">
-        <button class="pink-btn" style="width: auto; padding: 7px 18px;" onclick="addResource()">링크 저장</button>
-      </div>
-    </div>
-    <div class="list-container" id="resources-list"></div>
   </div>
 </div>
 
 <script>
   // ==========================================
-  // 🔑 우리 둘만의 4자리 비밀번호 설정
+  // 비밀번호 인증
   // ==========================================
-  const TEAM_PASSWORD = "1233"; // 필요시 원하는 4자리 숫자로 변경 가능!
+  const TEAM_PASSWORD = "0000";
 
   function checkPin() {
     const input = document.getElementById('pin-input');
@@ -434,7 +818,7 @@
       localStorage.setItem('project0_auth', 'passed');
       unlockApp();
     } else {
-      alert('비밀번호가 올바르지 않습니다! ❌');
+      alert('비밀번호가 올바르지 않습니다.');
       input.value = '';
       input.focus();
     }
@@ -446,8 +830,7 @@
 
   function unlockApp() {
     document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('app-container').style.display = 'block';
-    // 앱 접속 성공 시 데이터 불러오기 시작
+    document.getElementById('app-container').style.display = 'flex';
     switchTab('tasks');
     loadTasks();
     loadMeetings();
@@ -461,7 +844,6 @@
     location.reload();
   }
 
-  // 이전에 비밀번호를 입력해서 통과한 기록이 있는지 확인 (자동 로그인)
   window.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('project0_auth') === 'passed') {
       unlockApp();
@@ -472,7 +854,7 @@
   });
 
   // ==========================================
-  // 1. Supabase 접속 설정
+  // Supabase 설정
   // ==========================================
   const SUPABASE_URL = "https://ykhsjjaspagnplzrabyy.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_N-orkQ3J2ew4kxCLMmiYSQ_0ioDhbi5";
@@ -486,9 +868,116 @@
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  // 날짜와 시간 형식화 (예: 2026. 11. 21. 14:30)
+  function formatDateTime(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return isoString;
+    return d.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
+
   // ==========================================
-  // 2. 탭 전환 기능
+  // 완벽 동기화 보장용 메타 캐시 (localStorage)
   // ==========================================
+  function getMetaCache(key) {
+    try { return JSON.parse(localStorage.getItem('meta_' + key)) || {}; }
+    catch(e) { return {}; }
+  }
+  function setMetaCache(key, id, field, value) {
+    try {
+      const cache = getMetaCache(key);
+      if (!cache[id]) cache[id] = {};
+      cache[id][field] = value;
+      localStorage.setItem('meta_' + key, JSON.stringify(cache));
+    } catch(e) {}
+  }
+
+  // ==========================================
+  // 상태 관리 (정렬 & 필터)
+  // ==========================================
+  const sortStates = {
+    tasks: 'desc',
+    meetings: 'desc',
+    ideas: 'desc',
+    resources: 'desc'
+  };
+
+  const filterStates = {
+    ideas: 'all',
+    resources: 'all'
+  };
+
+  function toggleSort(tab) {
+    sortStates[tab] = sortStates[tab] === 'desc' ? 'asc' : 'desc';
+    const label = document.getElementById(`sort-label-${tab}`);
+    if (label) {
+      label.innerText = sortStates[tab] === 'desc' ? '최신순 ⬇' : '날짜순 ⬆';
+    }
+    if (tab === 'tasks') loadTasks();
+    if (tab === 'meetings') loadMeetings();
+    if (tab === 'ideas') loadIdeas();
+    if (tab === 'resources') loadResources();
+  }
+
+  function setFilter(tab, color, btnEl) {
+    filterStates[tab] = color;
+    const parent = btnEl.parentElement;
+    parent.querySelectorAll('.dot-all-btn, .dot-filter-btn').forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+    if (tab === 'ideas') loadIdeas();
+    if (tab === 'resources') loadResources();
+  }
+
+  function setFilterDot(tab, color, dotEl) {
+    filterStates[tab] = color;
+    const parent = dotEl.parentElement;
+    parent.querySelectorAll('.dot-all-btn, .dot-filter-btn').forEach(b => b.classList.remove('active'));
+    dotEl.classList.add('active');
+    if (tab === 'ideas') loadIdeas();
+    if (tab === 'resources') loadResources();
+  }
+
+  function getColorHex(code) {
+    switch(code) {
+      case 'pink': return 'var(--bm-pink)';
+      case 'rose': return 'var(--bm-rose)';
+      case 'yellow': return 'var(--bm-yellow)';
+      case 'mint': return 'var(--bm-mint)';
+      case 'lavender': return 'var(--bm-lavender)';
+      default: return 'var(--bm-none)';
+    }
+  }
+
+  function selectNewIdeaColor(color, el) {
+    document.getElementById('idea-color').value = color;
+    const dots = document.querySelectorAll('#idea-color-picker .color-dot');
+    dots.forEach(d => d.style.transform = 'scale(1)');
+    el.style.transform = 'scale(1.35)';
+  }
+
+  function selectNewResColor(color, el) {
+    document.getElementById('res-color').value = color;
+    const dots = document.querySelectorAll('#res-color-picker .color-dot');
+    dots.forEach(d => d.style.transform = 'scale(1)');
+    el.style.transform = 'scale(1.35)';
+  }
+
+  function selectEditColor(type, id, color, el) {
+    const input = document.getElementById(`edit-${type}-color-${id}`);
+    if (input) input.value = color;
+    const picker = el.parentElement;
+    picker.querySelectorAll('.color-dot').forEach(d => d.style.transform = 'scale(1)');
+    el.style.transform = 'scale(1.35)';
+  }
+
+  // 탭 전환
   window.switchTab = function(type) {
     const allTabs = ['tasks', 'meetings', 'ideas', 'resources'];
     allTabs.forEach(t => {
@@ -511,7 +1000,8 @@
   };
 
   // ==========================================
-  // 3. 프로젝트 진행목록 (tasks)
+  // 1. 진행목록 (tasks)
+  // - 슬림 내용 박스 + 글자 3칸 여백
   // ==========================================
   let editingTaskId = null;
 
@@ -519,47 +1009,85 @@
     const list = document.getElementById('tasks-list');
     if (!list) return;
 
-    const { data: tasks, error } = await supabase
+    const isDesc = sortStates.tasks === 'desc';
+    const { data: rawTasks, error } = await supabase
       .from('tasks')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: !isDesc });
 
     if (error) { console.error("작업 불러오기 오류:", error); return; }
 
-    if (!tasks || tasks.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 작업이 없습니다. 🚀</div>';
+    if (!rawTasks || rawTasks.length === 0) {
+      list.innerHTML = '<div style="text-align:center; padding:16px; color:var(--rose-muted); font-size:0.92rem;">등록된 작업이 없습니다.</div>';
       return;
     }
 
+    const tCache = getMetaCache('tasks');
+    const tasks = rawTasks.map(task => {
+      const cached = tCache[task.id] || {};
+      return {
+        ...task,
+        author: task.author || cached.author || '',
+        is_starred: task.is_starred !== undefined ? task.is_starred : (cached.is_starred === true)
+      };
+    });
+
     list.innerHTML = tasks.map(task => {
+      const author = task.author || '';
+      const authorText = author ? `작성자: ${escapeHtml(author)}` : '';
+
       if (editingTaskId === task.id) {
         return `
-          <div style="padding: 7px 10px; margin-bottom: 5px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3; display: flex; align-items: center; gap: 6px;">
-            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 1; padding: 5px 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
-            <div style="display: flex; gap: 4px; flex-shrink: 0;">
-              <button onclick="saveEditTask(${task.id})" class="pink-btn" style="padding: 5px 10px; font-size: 0.78rem; border-radius: 6px; width:auto; white-space: nowrap;">저장</button>
-              <button onclick="cancelEditTask()" style="padding: 5px 10px; font-size: 0.78rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; white-space: nowrap;">취소</button>
+          <div style="padding: 12px; margin-bottom: 6px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 2; min-width: 150px; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.92rem; color: var(--rose-deep);">
+              <input type="text" id="edit-task-author-${task.id}" value="${escapeHtml(author)}" placeholder="작성자" style="flex: 1; min-width: 80px; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.92rem; color: var(--rose-deep);">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 6px;">
+              <button onclick="cancelEditTask()" style="padding: 6px 12px; font-size: 0.82rem; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; color: var(--rose-medium);">취소</button>
+              <button onclick="saveEditTask(${task.id})" class="rose-btn" style="padding: 6px 14px; font-size: 0.82rem; border-radius: 6px; width:auto;">저장</button>
             </div>
           </div>
         `;
       }
 
       const isDone = task.is_completed === true;
+      const isStarred = task.is_starred === true;
+      const dateTimeStr = formatDateTime(task.created_at);
+
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin-bottom: 5px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
-          <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
-            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)" style="cursor: pointer; width: 15px; height: 15px; accent-color: var(--primary);">
-            <span style="font-size: 0.88rem; color: ${isDone ? '#aaa' : '#333'}; text-decoration: ${isDone ? 'line-through' : 'none'}; word-break: break-all;">
+        <div style="position: relative; padding: 12px 14px 10px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 8px;">
+          
+          <!-- 슬림 박스 + 글자 3칸 여백 -->
+          <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+            <input type="checkbox" class="custom-check" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)">
+            <div class="styled-content-box" style="flex: 1; min-width: 0; text-decoration: ${isDone ? 'line-through' : 'none'}; color: ${isDone ? 'var(--rose-muted)' : 'var(--rose-deep)'}; font-weight: ${isDone ? '400' : '700'};">
               ${escapeHtml(task.title || '')}
-            </span>
+            </div>
           </div>
-          <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px;">삭제</button>
+
+          <!-- 하단: 작성자 & [날짜+시간] + 별표 + 수정 + 삭제 -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-left: 27px;">
+            <div style="font-size: 0.78rem; color: var(--rose-muted); font-weight: 600;">
+              ${authorText}
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.73rem; color: var(--rose-muted); line-height: 1;">${dateTimeStr}</span>
+              <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleTaskStar(${task.id}, ${!isStarred})" title="중요 표시">★</button>
+              <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">수정</button>
+              <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">삭제</button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  async function toggleTaskStar(id, nextVal) {
+    setMetaCache('tasks', id, 'is_starred', nextVal);
+    await supabase.from('tasks').update({ is_starred: nextVal }).eq('id', id);
+    loadTasks();
   }
 
   function startEditTask(id) { editingTaskId = id; loadTasks(); }
@@ -567,21 +1095,41 @@
 
   async function saveEditTask(id) {
     const input = document.getElementById(`edit-task-title-${id}`);
+    const authorInput = document.getElementById(`edit-task-author-${id}`);
     const newTitle = input.value.trim();
-    if (!newTitle) { alert('작업 내용을 입력해주세요!'); return; }
-    const { error } = await supabase.from('tasks').update({ title: newTitle }).eq('id', id);
-    if (error) { alert("수정 실패: " + error.message); return; }
+    const newAuthor = authorInput ? authorInput.value.trim() : '';
+    if (!newTitle) { alert('작업 내용을 입력해주세요.'); return; }
+    
+    setMetaCache('tasks', id, 'author', newAuthor);
+
+    let { error } = await supabase.from('tasks').update({ title: newTitle, author: newAuthor }).eq('id', id);
+    if (error) {
+      await supabase.from('tasks').update({ title: newTitle }).eq('id', id);
+    }
     editingTaskId = null;
     loadTasks();
   }
 
   async function addTask() {
     const input = document.getElementById('task-input');
+    const authorInput = document.getElementById('task-author');
     const taskTitle = input.value.trim();
+    const author = authorInput ? authorInput.value.trim() : '';
     if (!taskTitle) return;
-    const { error } = await supabase.from('tasks').insert([{ title: taskTitle, is_completed: false }]);
-    if (error) { alert("작업 추가 실패: " + error.message); return; }
+
+    let { data, error } = await supabase.from('tasks').insert([{ title: taskTitle, author: author, is_completed: false }]).select();
+    if (error) {
+      const retry = await supabase.from('tasks').insert([{ title: taskTitle, is_completed: false }]).select();
+      data = retry.data;
+    }
+    
+    const newId = (data && data) ? data.id : (data ? data.id : null);
+    if (newId) {
+      setMetaCache('tasks', newId, 'author', author);
+    }
+
     input.value = '';
+    if (authorInput) authorInput.value = '';
     loadTasks();
   }
 
@@ -599,7 +1147,8 @@
   }
 
   // ==========================================
-  // 4. 회의록 (meetings)
+  // 2. 회의록 (meetings)
+  // - 슬림 박스 + 좌측 3칸 여백
   // ==========================================
   let editingMeetingId = null;
 
@@ -607,46 +1156,86 @@
     const list = document.getElementById('meetings-list');
     if (!list) return;
 
-    const { data: meetings, error } = await supabase
-      .from('meetings')
-      .select('*')
-      .order('meeting_date', { ascending: false });
+    const isDesc = sortStates.meetings === 'desc';
+    const { data: rawMeetings, error } = await supabase.from('meetings').select('*');
 
     if (error) { console.error("회의록 불러오기 오류:", error); return; }
 
-    if (!meetings || meetings.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 회의록이 없습니다. 📝</div>';
+    if (!rawMeetings || rawMeetings.length === 0) {
+      list.innerHTML = '<div style="text-align:center; padding:16px; color:var(--rose-muted); font-size:0.92rem;">등록된 회의록이 없습니다.</div>';
       return;
     }
 
+    const mCache = getMetaCache('meetings');
+    let meetings = rawMeetings.map(m => {
+      const cached = mCache[m.id] || {};
+      return {
+        ...m,
+        author: m.author || cached.author || '',
+        is_starred: m.is_starred !== undefined ? m.is_starred : (cached.is_starred === true)
+      };
+    });
+
+    meetings.sort((a, b) => {
+      const timeA = new Date(a.created_at || a.meeting_date).getTime();
+      const timeB = new Date(b.created_at || b.meeting_date).getTime();
+      return isDesc ? (timeB - timeA) : (timeA - timeB);
+    });
+
     list.innerHTML = meetings.map(m => {
+      const author = m.author || '';
+      const authorText = author ? `작성자: ${escapeHtml(author)}` : '';
+      const isStarred = m.is_starred === true;
+      const dateTimeStr = formatDateTime(m.created_at || m.meeting_date);
+
       if (editingMeetingId === m.id) {
         return `
-          <div style="padding: 10px; margin-bottom: 8px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.85rem;">✏️ 회의록 수정</div>
-            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; margin-bottom: 5px; font-size:0.82rem;">
-            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 5px 6px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">${escapeHtml(m.content || '')}</textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditMeeting()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
-              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
+          <div style="padding: 12px; margin-bottom: 8px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary);">
+            <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 6px; font-size: 0.88rem;">회의록 수정</div>
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+              <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="flex: 1; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+              <input type="text" id="edit-m-author-${m.id}" value="${escapeHtml(author)}" placeholder="작성자" style="flex: 1; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+            </div>
+            <textarea id="edit-m-content-${m.id}" rows="3" style="width: 100%; box-sizing: border-box; padding: 7px 10px; margin-bottom: 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.9rem; color: var(--rose-deep);">${escapeHtml(m.content || '')}</textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 6px;">
+              <button onclick="cancelEditMeeting()" style="padding: 6px 12px; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; font-size: 0.82rem; color: var(--rose-medium);">취소</button>
+              <button onclick="saveEditMeeting(${m.id})" class="rose-btn" style="padding: 6px 12px; border-radius: 6px; font-size: 0.82rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
 
       return `
-        <div style="position: relative; padding: 12px 14px; margin-bottom: 8px; background: white; border-radius: 10px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 0.92rem; margin-bottom: 4px;">
-            📅 ${m.meeting_date || ''}
+        <div style="position: relative; padding: 14px 16px 10px; margin-bottom: 8px; background: white; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-right: 2px;">
+            <div style="font-size: 0.8rem; color: var(--rose-muted); font-weight: 700;">
+              ${authorText}
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleMeetingStar(${m.id}, ${!isStarred})" title="중요 표시">★</button>
+              <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">수정</button>
+              <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">삭제</button>
+            </div>
           </div>
-          <div style="color: #333; font-size: 0.86rem; white-space: pre-wrap; line-height: 1.45;">${escapeHtml(m.content || '')}</div>
-          <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 4px;">
-            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">삭제</button>
+
+          <!-- 회의내용: 슬림 박스 + 좌측 3칸 여백 -->
+          <div class="styled-content-box" style="margin-bottom: 8px;">
+            ${escapeHtml(m.content || '')}
+          </div>
+
+          <div style="font-size: 0.74rem; color: var(--rose-muted); line-height: 1.2;">
+            ${dateTimeStr || m.meeting_date || ''}
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  async function toggleMeetingStar(id, nextVal) {
+    setMetaCache('meetings', id, 'is_starred', nextVal);
+    await supabase.from('meetings').update({ is_starred: nextVal }).eq('id', id);
+    loadMeetings();
   }
 
   function startEditMeeting(id) { editingMeetingId = id; loadMeetings(); }
@@ -654,20 +1243,37 @@
 
   async function saveEditMeeting(id) {
     const date = document.getElementById(`edit-m-date-${id}`).value;
+    const author = document.getElementById(`edit-m-author-${id}`).value.trim();
     const content = document.getElementById(`edit-m-content-${id}`).value.trim();
-    if (!content) { alert('회의 내용은 비워둘 수 없습니다!'); return; }
-    const { error } = await supabase.from('meetings').update({ meeting_date: date, content: content }).eq('id', id);
-    if (error) { alert("수정 실패: " + error.message); return; }
+    if (!content) { alert('회의 내용을 입력해주세요.'); return; }
+    
+    setMetaCache('meetings', id, 'author', author);
+
+    let { error } = await supabase.from('meetings').update({ meeting_date: date, content: content, author: author }).eq('id', id);
+    if (error) {
+      await supabase.from('meetings').update({ meeting_date: date, content: content }).eq('id', id);
+    }
     editingMeetingId = null;
     loadMeetings();
   }
 
   async function addMeeting() {
     const date = document.getElementById('m-date').value;
+    const author = document.getElementById('m-author').value.trim();
     const content = document.getElementById('m-content').value.trim();
-    if (!content) { alert('회의 내용을 입력해주세요!'); return; }
-    const { error } = await supabase.from('meetings').insert([{ meeting_date: date, content: content }]);
-    if (error) { alert("회의록 저장 실패: " + error.message); return; }
+    if (!content) { alert('회의 내용을 입력해주세요.'); return; }
+    
+    let { data, error } = await supabase.from('meetings').insert([{ meeting_date: date, content: content, author: author }]).select();
+    if (error) {
+      const retry = await supabase.from('meetings').insert([{ meeting_date: date, content: content }]).select();
+      data = retry.data;
+    }
+    
+    const newId = (data && data) ? data.id : (data ? data.id : null);
+    if (newId) {
+      setMetaCache('meetings', newId, 'author', author);
+    }
+
     document.getElementById('m-content').value = "";
     loadMeetings();
   }
@@ -680,7 +1286,9 @@
   }
 
   // ==========================================
-  // 5. 아이디어 메모 (ideas)
+  // 3. 아이디어 (ideas)
+  // - 회의록과 동일한 슬림 박스 설정 적용
+  // - 작성자 표기를 하단 날짜 바로 오른쪽에 배치
   // ==========================================
   let editingIdeaId = null;
 
@@ -688,47 +1296,117 @@
     const container = document.getElementById('ideas-list');
     if (!container) return;
 
-    const { data: ideas, error } = await supabase
+    const isDesc = sortStates.ideas === 'desc';
+    const { data: rawIdeas, error } = await supabase
       .from('ideas')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: !isDesc });
 
     if (error) { console.error("아이디어 불러오기 오류:", error); return; }
 
-    if (!ideas || ideas.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 아이디어가 없습니다. ✨</div>';
+    const iCache = getMetaCache('ideas');
+    let ideas = (rawIdeas || []).map(item => {
+      const cached = iCache[item.id] || {};
+      return {
+        ...item,
+        author: item.author || cached.author || '',
+        bookmark_color: item.bookmark_color || cached.bookmark_color || 'none'
+      };
+    });
+
+    if (filterStates.ideas !== 'all') {
+      ideas = ideas.filter(i => (i.bookmark_color || 'none') === filterStates.ideas);
+    }
+
+    if (ideas.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:16px; color:var(--rose-muted); font-size:0.92rem;">선택된 조건의 아이디어가 없습니다.</div>';
       return;
     }
 
     container.innerHTML = ideas.map(item => {
+      const color = item.bookmark_color || 'none';
+      const colorHex = getColorHex(color);
+      const author = item.author || '';
+      const authorText = author ? `작성자: ${escapeHtml(author)}` : '';
+
       if (editingIdeaId === item.id) {
         return `
-          <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.82rem;">✏️ 아이디어 수정 중</div>
-            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
-            <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">${escapeHtml(item.description || '')}</textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditIdea()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
-              <button onclick="saveEditIdea(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
+          <div style="padding: 14px 12px 10px; margin-bottom: 8px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column; justify-content: flex-end;">
+            <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 6px; font-size: 0.88rem;">아이디어 수정</div>
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+              <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="아이디어 제목" style="flex: 1.6; min-width: 140px; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+              <input type="text" id="edit-idea-author-${item.id}" value="${escapeHtml(author)}" placeholder="작성자" style="flex: 1; min-width: 90px; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+            </div>
+            <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">${escapeHtml(item.description || '')}</textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="font-size: 0.75rem; color: var(--rose-muted); font-weight: 700;">책갈피:</span>
+                <input type="hidden" id="edit-idea-color-${item.id}" value="${color}">
+                <div class="color-picker-mini" id="edit-idea-picker-${item.id}">
+                  <div class="color-dot" style="background: var(--bm-none); transform: ${color === 'none' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'none', this)" title="기본"></div>
+                  <div class="color-dot" style="background: var(--bm-pink); transform: ${color === 'pink' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'pink', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-rose); transform: ${color === 'rose' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'rose', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-yellow); transform: ${color === 'yellow' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'yellow', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-mint); transform: ${color === 'mint' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'mint', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-lavender); transform: ${color === 'lavender' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('idea', ${item.id}, 'lavender', this)"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button onclick="cancelEditIdea()" style="padding: 6px 12px; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; font-size: 0.82rem; color: var(--rose-medium);">취소</button>
+                <button onclick="saveEditIdea(${item.id})" class="rose-btn" style="padding: 6px 12px; border-radius: 6px; font-size: 0.82rem; width: auto;">저장</button>
+              </div>
             </div>
           </div>
         `;
       }
 
-      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString('ko-KR', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+      const dateTimeStr = formatDateTime(item.created_at);
 
       return `
-        <div style="position: relative; padding: 10px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 0.88rem; margin-bottom: 3px;">💡 ${escapeHtml(item.title || '')}</div>
-          <div style="color: #444; font-size: 0.82rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(item.description || '')}</div>
-          <div style="font-size: 0.7rem; color: #aaa; margin-top: 5px;">${dateStr}</div>
-          <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-            <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold;">수정</button>
-            <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold;">삭제</button>
+        <div class="card-item" style="padding: 14px 14px 10px 18px; margin-bottom: 8px; display: flex; flex-direction: column;">
+          <div class="card-bookmark-strip" style="background-color: ${colorHex};"></div>
+          
+          <!-- 상단: 아이디어 제목 및 우측 버튼 -->
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+            <span style="font-weight: 800; color: var(--rose-deep); font-size: 0.95rem;">${escapeHtml(item.title || '')}</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">수정</button>
+              <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">삭제</button>
+            </div>
+          </div>
+
+          <!-- 아이디어 내용: 회의록과 동일한 슬림 박스 + 좌측 3칸 여백 -->
+          <div class="styled-content-box" style="margin-bottom: 6px;">
+            ${escapeHtml(item.description || '')}
+          </div>
+          
+          <!-- 하단: 날짜 바로 오른쪽에 작성자 배치 & 책갈피 색상 -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 0.74rem; color: var(--rose-muted); line-height: 1.2;">${dateTimeStr}</span>
+              ${authorText ? `<span style="font-size: 0.74rem; color: var(--rose-muted); font-weight: 600; line-height: 1.2;">${authorText}</span>` : ''}
+            </div>
+            
+            <div class="color-picker-mini" title="책갈피 색상 변경">
+              <div class="color-dot" style="background: var(--bm-pink);" onclick="updateBookmarkColor('ideas', ${item.id}, 'pink')"></div>
+              <div class="color-dot" style="background: var(--bm-rose);" onclick="updateBookmarkColor('ideas', ${item.id}, 'rose')"></div>
+              <div class="color-dot" style="background: var(--bm-yellow);" onclick="updateBookmarkColor('ideas', ${item.id}, 'yellow')"></div>
+              <div class="color-dot" style="background: var(--bm-mint);" onclick="updateBookmarkColor('ideas', ${item.id}, 'mint')"></div>
+              <div class="color-dot" style="background: var(--bm-lavender);" onclick="updateBookmarkColor('ideas', ${item.id}, 'lavender')"></div>
+              <div class="color-dot" style="background: var(--bm-none);" onclick="updateBookmarkColor('ideas', ${item.id}, 'none')" title="해제"></div>
+            </div>
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  async function updateBookmarkColor(table, id, color) {
+    setMetaCache(table, id, 'bookmark_color', color);
+    await supabase.from(table).update({ bookmark_color: color }).eq('id', id);
+    if (table === 'ideas') loadIdeas();
+    if (table === 'resources') loadResources();
   }
 
   function startEditIdea(id) { editingIdeaId = id; loadIdeas(); }
@@ -736,26 +1414,52 @@
 
   async function saveEditIdea(id) {
     const title = document.getElementById(`edit-idea-title-${id}`).value.trim();
+    const author = document.getElementById(`edit-idea-author-${id}`).value.trim();
     const desc = document.getElementById(`edit-idea-desc-${id}`).value.trim();
-    if (!title) { alert('아이디어 제목은 비워둘 수 없습니다!'); return; }
-    const { error } = await supabase.from('ideas').update({ title: title, description: desc }).eq('id', id);
-    if (error) { alert("수정 실패: " + error.message); return; }
+    const color = document.getElementById(`edit-idea-color-${id}`).value;
+    if (!title) { alert('아이디어 제목을 입력해주세요.'); return; }
+    
+    setMetaCache('ideas', id, 'author', author);
+    setMetaCache('ideas', id, 'bookmark_color', color);
+
+    let { error } = await supabase.from('ideas').update({ title: title, description: desc, author: author, bookmark_color: color }).eq('id', id);
+    if (error) {
+      await supabase.from('ideas').update({ title: title, description: desc }).eq('id', id);
+    }
     editingIdeaId = null;
     loadIdeas();
   }
 
   async function addIdea() {
     const titleInput = document.getElementById('idea-title');
+    const authorInput = document.getElementById('idea-author');
     const descInput = document.getElementById('idea-desc');
+    const colorInput = document.getElementById('idea-color');
     const title = titleInput.value.trim();
+    const author = authorInput.value.trim();
     const desc = descInput.value.trim();
-    if (!title) { alert('아이디어 제목을 입력해주세요!'); return; }
+    const color = colorInput.value || 'none';
+    if (!title) { alert('아이디어 제목을 입력해주세요.'); return; }
 
-    const { error } = await supabase.from('ideas').insert([{ title: title, description: desc }]);
-    if (error) { alert("아이디어 저장 실패: " + error.message); return; }
+    let { data, error } = await supabase.from('ideas').insert([{ title: title, description: desc, author: author, bookmark_color: color }]).select();
+    if (error) {
+      const retry = await supabase.from('ideas').insert([{ title: title, description: desc }]).select();
+      data = retry.data;
+    }
+    
+    const newId = (data && data) ? data.id : (data ? data.id : null);
+    if (newId) {
+      setMetaCache('ideas', newId, 'author', author);
+      setMetaCache('ideas', newId, 'bookmark_color', color);
+    }
 
     titleInput.value = '';
+    authorInput.value = '';
     descInput.value = '';
+    colorInput.value = 'none';
+    const dots = document.querySelectorAll('#idea-color-picker .color-dot');
+    dots.forEach((d, idx) => d.style.transform = idx === 0 ? 'scale(1.35)' : 'scale(1)');
+
     loadIdeas();
   }
 
@@ -767,7 +1471,10 @@
   }
 
   // ==========================================
-  // 6. 자료 & 녹화 링크 (resources)
+  // 4. 자료 링크 (resources)
+  // - 슬림 박스 + 좌측 3칸 여백
+  // - 공유링크: 날짜 바로 위에 날짜와 같은 폰트사이즈로 좌측 정렬
+  // - 작성자: 날짜 바로 오른쪽에 배치
   // ==========================================
   let editingResourceId = null;
 
@@ -775,51 +1482,119 @@
     const container = document.getElementById('resources-list');
     if (!container) return;
 
-    const { data: resources, error } = await supabase
+    const isDesc = sortStates.resources === 'desc';
+    const { data: rawResources, error } = await supabase
       .from('resources')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: !isDesc });
 
     if (error) { console.error("자료 목록 불러오기 오류:", error); return; }
 
-    if (!resources || resources.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">저장된 링크가 없습니다. 📁</div>';
+    const rCache = getMetaCache('resources');
+    let resources = (rawResources || []).map(item => {
+      const cached = rCache[item.id] || {};
+      return {
+        ...item,
+        author: item.author || cached.author || '',
+        description: item.description || cached.description || '',
+        bookmark_color: item.bookmark_color || cached.bookmark_color || 'none'
+      };
+    });
+
+    if (filterStates.resources !== 'all') {
+      resources = resources.filter(r => (r.bookmark_color || 'none') === filterStates.resources);
+    }
+
+    if (resources.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:16px; color:var(--rose-muted); font-size:0.92rem;">선택된 조건의 링크가 없습니다.</div>';
       return;
     }
 
     container.innerHTML = resources.map(item => {
+      const color = item.bookmark_color || 'none';
+      const colorHex = getColorHex(color);
+      const author = item.author || '';
+      const authorText = author ? `작성자: ${escapeHtml(author)}` : '';
+
       if (editingResourceId === item.id) {
         return `
-          <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.82rem;">✏️ 링크 정보 수정 중</div>
-            <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px;">
-              <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" style="flex: 1; min-width: 120px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
-              <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" style="flex: 1.4; min-width: 150px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
+          <div style="padding: 14px 12px 10px; margin-bottom: 8px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column; justify-content: flex-end;">
+            <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 6px; font-size: 0.88rem;">링크 및 세부내용 수정</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+              <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="자료 이름" style="flex: 1.2; min-width: 130px; padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+              <input type="text" id="edit-res-author-${item.id}" value="${escapeHtml(author)}" placeholder="작성자" style="flex: 0.8; min-width: 80px; padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
+              <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" placeholder="URL 링크" style="flex: 1.5; min-width: 150px; padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditResource()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
-              <button onclick="saveEditResource(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
+            <textarea id="edit-res-desc-${item.id}" rows="2" placeholder="자료 세부내용" style="width: 100%; box-sizing: border-box; padding: 6px 10px; margin-bottom: 6px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">${escapeHtml(item.description || '')}</textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="font-size: 0.75rem; color: var(--rose-muted); font-weight: 700;">책갈피:</span>
+                <input type="hidden" id="edit-res-color-${item.id}" value="${color}">
+                <div class="color-picker-mini" id="edit-res-picker-${item.id}">
+                  <div class="color-dot" style="background: var(--bm-none); transform: ${color === 'none' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'none', this)" title="기본"></div>
+                  <div class="color-dot" style="background: var(--bm-pink); transform: ${color === 'pink' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'pink', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-rose); transform: ${color === 'rose' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'rose', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-yellow); transform: ${color === 'yellow' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'yellow', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-mint); transform: ${color === 'mint' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'mint', this)"></div>
+                  <div class="color-dot" style="background: var(--bm-lavender); transform: ${color === 'lavender' ? 'scale(1.35)' : 'scale(1)'};" onclick="selectEditColor('res', ${item.id}, 'lavender', this)"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button onclick="cancelEditResource()" style="padding: 6px 12px; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; font-size: 0.82rem; color: var(--rose-medium);">취소</button>
+                <button onclick="saveEditResource(${item.id})" class="rose-btn" style="padding: 6px 12px; border-radius: 6px; font-size: 0.82rem; width: auto;">저장</button>
+              </div>
             </div>
           </div>
         `;
       }
 
+      const dateTimeStr = formatDateTime(item.created_at);
+
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; flex-wrap: nowrap; gap: 8px; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
-          <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-            <span style="font-size: 1.05rem; flex-shrink: 0;">🎬</span>
-            <div style="min-width: 0; overflow: hidden;">
-              <div style="font-weight: bold; color: #333; font-size: 0.85rem; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                ${escapeHtml(item.title || '')}
-              </div>
-              <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.78rem; text-decoration: underline; word-break: break-all; display: inline-block;">
-                ${escapeHtml(item.url || '')} ↗
-              </a>
+        <div class="card-item" style="padding: 14px 14px 10px 18px; margin-bottom: 8px; display: flex; flex-direction: column;">
+          <div class="card-bookmark-strip" style="background-color: ${colorHex};"></div>
+          
+          <!-- 상단: 자료 이름 및 우측 수정/삭제 -->
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+            <span style="font-weight: 800; color: var(--rose-deep); font-size: 0.96rem;">
+              ${escapeHtml(item.title || '')}
+            </span>
+            <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+              <button onclick="startEditResource(${item.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">수정</button>
+              <button onclick="deleteResource(${item.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.82rem; font-weight: 700; padding: 0 2px;">삭제</button>
             </div>
           </div>
-          <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditResource(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteResource(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">삭제</button>
+
+          <!-- 중간: [세부내용] 슬림 박스 + 좌측 3칸 여백 -->
+          <div class="styled-content-box" style="margin: 4px 0 6px;">
+            ${escapeHtml(item.description || '기록된 세부 메모가 없습니다.')}
+          </div>
+
+          <!-- 공유링크: 날짜 위에 날짜와 동일한 폰트 사이즈(0.74rem)로 좌측 정렬 -->
+          <div style="margin-bottom: 3px; font-size: 0.74rem;">
+            <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" style="color: var(--rose-link); text-decoration: underline; word-break: break-all; font-weight: 600;">
+              ${escapeHtml(item.url || '')}
+            </a>
+          </div>
+
+          <!-- 하단: 날짜 바로 오른쪽에 작성자 배치 & 책갈피 색상 팔레트 -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 0.74rem; color: var(--rose-muted); line-height: 1.2;">
+                ${dateTimeStr}
+              </span>
+              ${authorText ? `<span style="font-size: 0.74rem; color: var(--rose-muted); font-weight: 600; line-height: 1.2;">${authorText}</span>` : ''}
+            </div>
+            
+            <div class="color-picker-mini" title="책갈피 색상 변경" style="flex-shrink: 0;">
+              <div class="color-dot" style="background: var(--bm-pink);" onclick="updateBookmarkColor('resources', ${item.id}, 'pink')"></div>
+              <div class="color-dot" style="background: var(--bm-rose);" onclick="updateBookmarkColor('resources', ${item.id}, 'rose')"></div>
+              <div class="color-dot" style="background: var(--bm-yellow);" onclick="updateBookmarkColor('resources', ${item.id}, 'yellow')"></div>
+              <div class="color-dot" style="background: var(--bm-mint);" onclick="updateBookmarkColor('resources', ${item.id}, 'mint')"></div>
+              <div class="color-dot" style="background: var(--bm-lavender);" onclick="updateBookmarkColor('resources', ${item.id}, 'lavender')"></div>
+              <div class="color-dot" style="background: var(--bm-none);" onclick="updateBookmarkColor('resources', ${item.id}, 'none')" title="해제"></div>
+            </div>
           </div>
         </div>
       `;
@@ -831,29 +1606,60 @@
 
   async function saveEditResource(id) {
     const title = document.getElementById(`edit-res-title-${id}`).value.trim();
+    const author = document.getElementById(`edit-res-author-${id}`).value.trim();
+    const desc = document.getElementById(`edit-res-desc-${id}`).value.trim();
+    const color = document.getElementById(`edit-res-color-${id}`).value;
     let url = document.getElementById(`edit-res-url-${id}`).value.trim();
-    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요!'); return; }
+    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요.'); return; }
     if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
-    const { error } = await supabase.from('resources').update({ title: title, url: url }).eq('id', id);
-    if (error) { alert("수정 실패: " + error.message); return; }
+    setMetaCache('resources', id, 'author', author);
+    setMetaCache('resources', id, 'description', desc);
+    setMetaCache('resources', id, 'bookmark_color', color);
+
+    let { error } = await supabase.from('resources').update({ title: title, url: url, description: desc, author: author, bookmark_color: color }).eq('id', id);
+    if (error) {
+      await supabase.from('resources').update({ title: title, url: url }).eq('id', id);
+    }
     editingResourceId = null;
     loadResources();
   }
 
   async function addResource() {
     const titleInput = document.getElementById('res-title');
+    const authorInput = document.getElementById('res-author');
+    const descInput = document.getElementById('res-desc');
+    const colorInput = document.getElementById('res-color');
     const urlInput = document.getElementById('res-url');
     const title = titleInput.value.trim();
+    const author = authorInput.value.trim();
+    const desc = descInput.value.trim();
+    const color = colorInput.value || 'none';
     let url = urlInput.value.trim();
-    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요!'); return; }
+    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요.'); return; }
     if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
-    const { error } = await supabase.from('resources').insert([{ title: title, url: url }]);
-    if (error) { alert("링크 저장 실패: " + error.message); return; }
+    let { data, error } = await supabase.from('resources').insert([{ title: title, url: url, description: desc, author: author, bookmark_color: color }]).select();
+    if (error) {
+      const retry = await supabase.from('resources').insert([{ title: title, url: url }]).select();
+      data = retry.data;
+    }
+    
+    const newId = (data && data) ? data.id : (data ? data.id : null);
+    if (newId) {
+      setMetaCache('resources', newId, 'author', author);
+      setMetaCache('resources', newId, 'description', desc);
+      setMetaCache('resources', newId, 'bookmark_color', color);
+    }
 
     titleInput.value = '';
+    authorInput.value = '';
+    descInput.value = '';
     urlInput.value = '';
+    colorInput.value = 'none';
+    const dots = document.querySelectorAll('#res-color-picker .color-dot');
+    dots.forEach((d, idx) => d.style.transform = idx === 0 ? 'scale(1.35)' : 'scale(1)');
+
     loadResources();
   }
 
