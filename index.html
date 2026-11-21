@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌸 PROJECT-0 | 2인 개발 협업 툴</title>
+  <!-- Supabase JS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #ff8da1; /* 요청하신 옅은 파스텔 핑크 */
+      --primary-soft: #fff0f3;
+      --bg: #faf7f8;
+      --card-bg: #ffffff;
+      --text: #2d3748;
+      --text-muted: #718096;
+      --border: #f0e6e8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(255, 141, 161, 0.12);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    header {
+      padding: 28px 20px 18px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, var(--primary-soft) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 1.6rem;
+      color: #1a202c;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* 상단 탭 */
+    .tab-bar {
+      display: flex;
+      background: #fdf2f4;
+      padding: 6px;
+      gap: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #a0aec0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(255, 141, 161, 0.2);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 24px 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 입력 요소 공통 */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #4a5568;
+    }
+    input[type="text"], input[type="date"], textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      background: #fff;
+      transition: border 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* 핑크 메인 버튼 */
+    .pink-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 141, 161, 0.3);
+    }
+    .pink-btn:hover {
+      filter: brightness(0.96);
+      transform: translateY(-1px);
+    }
+
+    /* 리스트 공통 */
+    .list-container {
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 회의록 카드 */
+    .meeting-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .meeting-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .meeting-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .del-btn {
+      background: none;
+      border: none;
+      color: #cbd5e0;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .del-btn:hover { color: #e53e3e; }
+
+    .m-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #718096;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+    .m-body {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: #2d3748;
+    }
+    .m-decisions-box {
+      background: var(--primary-soft);
+      border-left: 3px solid var(--primary);
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    /* 투두 항목 */
+    .todo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .todo-row:hover {
+      border-color: #ffd1dc;
+    }
+    .todo-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .todo-checkbox {
+      accent-color: var(--primary); /* 옅은 파스텔 핑크 체크박스 (#ff8da1) */
+      width: 19px;
+      height: 19px;
+      cursor: pointer;
+    }
+    .completed-text {
+      text-decoration: line-through;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🌸 PROJECT-0</h1>
+    <p>2인 기획·개발 협업 관리 대시보드</p>
+  </header>
+
+  <!-- 상단 탭 메뉴 -->
+  <div class="tab-bar">
+    <button id="btn-m" class="tab-btn active" onclick="switchTab('meetings')">📋 회의록</button>
+    <button id="btn-t" class="tab-btn" onclick="switchTab('todos')">✅ 개발 진행 (투두)</button>
+  </div>
+
+  <!-- 1. 회의록 탭 -->
+  <div id="tab-meetings" class="tab-content active">
+    <div class="form-group">
+      <label for="m-date">회의 날짜</label>
+      <input type="date" id="m-date">
+    </div>
+    <div class="form-group">
+      <label for="m-content">디스코드 통화 내용 / 요약</label>
+      <textarea id="m-content" placeholder="오늘 통화에서 나온 주요 내용을 적어보세요."></textarea>
+    </div>
+    <div class="form-group">
+      <label for="m-decisions">📌 결정된 사항 & 각자 할 일</label>
+      <textarea id="m-decisions" placeholder="예: [나] 파스텔 핑크 체크박스 적용 / [동료] 메인 로고 기획"></textarea>
+    </div>
+    <button class="pink-btn" onclick="saveMeeting()">회의록 저장하기</button>
+
+    <div class="list-container" id="meetings-list">
+      <!-- 회의록 카드 표시 위치 -->
+    </div>
+  </div>
+
+  <!-- 2. 투두리스트 탭 -->
+  <div id="tab-todos" class="tab-content">
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <input type="text" id="todo-input" placeholder="오늘 할 작업을 적어주세요..." onkeypress="handleTodoKey(event)">
+      <button class="pink-btn" style="width: 80px;" onclick="addTodo()">추가</button>
+    </div>
+    <div class="list-container" id="todos-list">
+      <!-- 투두 항목 표시 위치 -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // 1] Supabase 접속 설정
+  // ==========================================
+  // 1. 키 설정
+  const SUPABASE_URL = "https://ykhsjjaspagnplzrabyy.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_N-orkQ3J2ew4kxCLMmiYSQ_0ioDhbi5";
+
+  // 2. 접속 객체 생성 (이름 충돌 방지를 위해 supabaseClient 로 확실하게 분리)
+  window.supabase = window.supabase.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : supabase;
+
+
+  // 오늘 날짜 기본 세팅
+  document.getElementById('m-date').valueAsDate = new Date();
+
+  // 탭 전환
+  function switchTab(type) {
+    const tabM = document.getElementById('tab-meetings');
+    const tabT = document.getElementById('tab-todos');
+    const btnM = document.getElementById('btn-m');
+    const btnT = document.getElementById('btn-t');
+
+    if (type === 'meetings') {
+      tabM.classList.add('active');
+      tabT.classList.remove('active');
+      btnM.classList.add('active');
+      btnT.classList.remove('active');
+    } else {
+      tabT.classList.add('active');
+      tabM.classList.remove('active');
+      btnT.classList.add('active');
+      btnM.classList.remove('active');
+    }
+  }
+
+  // ==========================================
+  // 2. 투두리스트 (tasks 테이블)
+  // ==========================================
+  async function loadTodos() {
+    const list = document.getElementById('todos-list');
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) {
+      list.innerHTML = "<p style='color:#e53e3e; text-align:center;'>할 일을 불러오지 못했습니다.</p>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      list.innerHTML = "<p style='color:#a0aec0; text-align:center;'>할 일이 비어 있습니다. 새로운 작업을 추가해 보세요!</p>";
+      return;
+    }
+
+    list.innerHTML = data.map(t => `
+      <div class="todo-row">
+        <div class="todo-left">
+          <input 
+            type="checkbox" 
+            class="todo-checkbox" 
+            ${t.is_completed ? 'checked' : ''} 
+            onchange="toggleTodo(${t.id}, ${t.is_completed})"
+          >
+          <span class="${t.is_completed ? 'completed-text' : ''}">${t.title}</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="del-btn" style="color: #718096;" onclick="editTodo(${t.id}, '${t.title.replace(/'/g, "\\'")}')">수정</button>
+          <button class="del-btn" onclick="deleteTodo(${t.id})">삭제</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 투두 내용 수정 함수
+  async function editTodo(id, currentTitle) {
+    const newTitle = prompt("수정할 내용을 입력해주세요:", currentTitle);
+    if (!newTitle || newTitle.trim() === "" || newTitle === currentTitle) return;
+
+    const { error } = await supabase
+      .from('tasks')
+      .update({ title: newTitle.trim() })
+      .eq('id', id);
+
+    if (error) {
+      alert("수정 실패: " + error.message);
+      return;
+    }
+    loadTodos();
+  }
+
+  async function addTodo() {
+    const input = document.getElementById('todo-input');
+    const title = input.value.trim();
+    if (!title) return;
+
+    const { error } = await supabase.from('tasks').insert([{ title: title, is_completed: false }]);
+    if (error) {
+      alert("할 일 저장 오류: " + error.message);
+      return;
+    }
+    input.value = "";
+    loadTodos();
+  }
+
+  function handleTodoKey(e) {
+    if (e.key === 'Enter') addTodo();
+  }
+
+  async function toggleTodo(id, current) {
+    await supabase.from('tasks').update({ is_completed: !current }).eq('id', id);
+    loadTodos();
+  }
+
+  async function deleteTodo(id) {
+    await supabase.from('tasks').delete().eq('id', id);
+    loadTodos();
+  }
+
+  // ==========================================
+  // 3. 회의록 (meetings 테이블)
+  // ==========================================
+  async function loadMeetings() {
+    const list = document.getElementById('meetings-list');
+    const { data, error } = await supabase
+      .from('meetings')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) {
+      list.innerHTML = "<p style='color:#a0aec0; text-align:center;'>회의록을 불러오는 중입니다...</p>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      list.innerHTML = "<p style='color:#a0aec0; text-align:center;'>저장된 회의록이 없습니다. 첫 통화 내용을 기록해 보세요!</p>";
+      return;
+    }
+
+    list.innerHTML = data.map(m => `
+      <div class="meeting-card">
+        <div class="meeting-card-top">
+          <span class="meeting-badge">📅 ${m.meeting_date || '날짜 미지정'}</span>
+          <button class="del-btn" onclick="deleteMeeting(${m.id})">삭제</button>
+        </div>
+        ${m.content ? `
+          <div class="m-label">대화 요약</div>
+          <div class="m-body">${m.content}</div>
+        ` : ''}
+        ${m.decisions ? `
+          <div class="m-label" style="color:var(--primary); margin-top:10px;">📌 결정 사항 & 각자 할 일</div>
+          <div class="m-decisions-box m-body">${m.decisions}</div>
+        ` : ''}
+      </div>
+    `).join('');
+  }
+
+  async function saveMeeting() {
+    const date = document.getElementById('m-date').value;
+    const content = document.getElementById('m-content').value.trim();
+    const decisions = document.getElementById('m-decisions').value.trim();
+
+    if (!content && !decisions) {
+      alert("회의 내용이나 결정 사항을 한 줄 이상 적어주세요!");
+      return;
+    }
+
+    const { error } = await supabase.from('meetings').insert([
+      { meeting_date: date, content: content, decisions: decisions }
+    ]);
+
+    if (error) {
+      alert("회의록 저장 실패: " + error.message);
+      return;
+    }
+
+    document.getElementById('m-content').value = "";
+    document.getElementById('m-decisions').value = "";
+    loadMeetings();
+  }
+
+  async function deleteMeeting(id) {
+    if (!confirm("이 회의록을 삭제할까요?")) return;
+    await supabase.from('meetings').delete().eq('id', id);
+    loadMeetings();
+  }
+
+  // 초기 데이터 불러오기
+  loadTodos();
+  loadMeetings();
+
+ // 탭 전환 확실한 함수
+  window.switchTab = function(type) {
+    const tabM = document.getElementById('tab-meetings');
+    const tabT = document.getElementById('tab-todos');
+    const btnM = document.getElementById('btn-m');
+    const btnT = document.getElementById('btn-t');
+
+    if (type === 'meetings') {
+      if (tabM) tabM.style.display = 'block';
+      if (tabT) tabT.style.display = 'none';
+      if (btnM) btnM.classList.add('active');
+      if (btnT) btnT.classList.remove('active');
+    } else {
+      if (tabM) tabM.style.display = 'none';
+      if (tabT) tabT.style.display = 'block';
+      if (btnM) btnM.classList.remove('active');
+      if (btnT) btnT.classList.add('active');
+    }
+  };
+
+</script>
+
+</body>
+</html>

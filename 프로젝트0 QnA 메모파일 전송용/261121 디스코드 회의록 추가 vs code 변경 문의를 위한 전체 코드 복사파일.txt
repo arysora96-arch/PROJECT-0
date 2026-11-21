@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Project 0 - 할 일 목록</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; }
+    h1 { color: #333; }
+    ul { list-style: none; padding: 0; }
+    li { background: #f4f4f4; margin: 8px 0; padding: 12px; border-radius: 6px; font-size: 16px; }
+    li { display: flex; align-items: center; justify-content: space-between; }
+    .task-content { display: flex; align-items: center; gap: 10px; }
+    .completed { text-decoration: line-through; color: #888; }
+    .btn-del { background: #d32f2f; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+
+  </style>
+</head>
+<body>
+  <h1>🌸PROJECT 0</h1>
+  <div class="input-box">
+  <input type="text" id="task-input" placeholder="새로운 할 일을 입력하세요...">
+  <button onclick="addTask()">추가</button>
+</div>
+  <ul id="task-list">데이터를 불러오는 중입니다...</ul>
+
+  <script>
+    const SUPABASE_URL = "https://ykhsjjaspagnplzrabyy.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_N-orkQ3J2ew4kxCLMmiYSQ_0ioDhbi5";
+
+    // 변수 이름을 sb 로 변경하여 충돌 방지!
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 1. 목록 불러오기
+    async function loadTasks() {
+      const { data, error } = await sb.from('tasks').select('*').order('id', { ascending: true });
+      const listElement = document.getElementById('task-list');
+
+      if (error) {
+        listElement.innerHTML = `<li style="color:red">오류: ${error.message}</li>`;
+        return;
+      }
+
+      listElement.innerHTML = '';
+      data.forEach(task => {
+        const item = document.createElement('li');
+
+        // 왼쪽: 체크박스 + 제목
+        const leftBox = document.createElement('div');
+        leftBox.className = 'task-content';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.is_completed;
+        checkbox.style.accentColor = '#ff8da1'; //
+        checkbox.onchange = () => toggleTask(task.id, task.is_completed);
+
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = `${task.id}. ${task.title}`;
+        if (task.is_completed) {
+          titleSpan.className = 'completed';
+        }
+
+        leftBox.appendChild(checkbox);
+        leftBox.appendChild(titleSpan);
+
+        // 오른쪽: 수정 버튼 + 삭제 버튼
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-edit';
+        editBtn.textContent = '수정';
+        editBtn.style.cssText = 'background: #ff8da1; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-right: 6px;';
+        editBtn.onclick = () => editTask(task.id, task.title);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-del';
+        delBtn.textContent = '삭제';
+        delBtn.style.cssText = 'background: #ff8da1; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px;';
+        delBtn.onclick = () => deleteTask(task.id);
+
+        // 수정/삭제 버튼을 담을 상자 만들기
+        const btnBox = document.createElement('div');
+        btnBox.style.display = 'flex';
+        btnBox.style.gap = '6px';
+        btnBox.appendChild(editBtn);
+        btnBox.appendChild(delBtn);
+
+        item.appendChild(leftBox);
+        item.appendChild(btnBox); // 화면에 상자 채로 쏙 넣기    
+        listElement.appendChild(item);
+      });
+    }
+
+    // 2. 새 할 일 추가
+    async function addTask() {
+      const input = document.getElementById('task-input');
+      const title = input.value.trim();
+
+      if (!title) {
+        alert("할 일 내용을 입력해주세요!");
+        return;
+      }
+
+      const { error } = await sb.from('tasks').insert([{ title: title, is_completed: false }]);
+      if (error) return alert("추가 실패: " + error.message);
+
+      input.value = '';
+      loadTasks();
+    }
+
+    // 3. 완료/미완료 토글 (체크박스)
+    async function toggleTask(id, currentStatus) {
+      const { error } = await sb.from('tasks').update({ is_completed: !currentStatus }).eq('id', id);
+      if (error) return alert("상태 변경 실패: " + error.message);
+      loadTasks();
+    }
+
+    // 4. 할 일 제목 수정 (수정 버튼)
+    async function editTask(id, currentTitle) {
+      const newTitle = prompt("수정할 내용을 입력하세요:", currentTitle);
+      if (newTitle === null) return;
+      if (newTitle.trim() === "") return alert("내용을 입력해주세요!");
+
+      const { error } = await sb.from('tasks').update({ title: newTitle.trim() }).eq('id', id);
+      if (error) return alert("수정 실패: " + error.message);
+      loadTasks();
+    }
+
+    // 5. 삭제하기 (삭제 버튼)
+    async function deleteTask(id) {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+
+      const { error } = await sb.from('tasks').delete().eq('id', id);
+      if (error) return alert("삭제 실패: " + error.message);
+      loadTasks();
+    }
+
+    loadTasks();
+      </script>
+</body>
+</html>
