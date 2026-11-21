@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌸 PROJECT-0 | 2인 개발 협업 툴</title>
+  <!-- Supabase JS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #ff8da1; /* 요청하신 옅은 파스텔 핑크 */
+      --primary-soft: #fff0f3;
+      --bg: #faf7f8;
+      --card-bg: #ffffff;
+      --text: #2d3748;
+      --text-muted: #718096;
+      --border: #f0e6e8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1200px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(255, 141, 161, 0.12);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    header {
+      padding: 28px 20px 18px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, var(--primary-soft) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 1.6rem;
+      color: #1a202c;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* 상단 탭 */
+    .tab-bar {
+      display: flex;
+      background: #fdf2f4;
+      padding: 6px;
+      gap: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #a0aec0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(255, 141, 161, 0.2);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 24px 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 입력 요소 공통 */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #4a5568;
+    }
+    input[type="text"], input[type="date"], textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      background: #fff;
+      transition: border 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* 핑크 메인 버튼 */
+    .pink-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 141, 161, 0.3);
+    }
+    .pink-btn:hover {
+      filter: brightness(0.96);
+      transform: translateY(-1px);
+    }
+
+    /* 리스트 공통 */
+    .list-container {
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 회의록 카드 */
+    .meeting-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .meeting-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .meeting-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .del-btn {
+      background: none;
+      border: none;
+      color: #cbd5e0;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .del-btn:hover { color: #e53e3e; }
+
+    .m-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #718096;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+    .m-body {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: #2d3748;
+    }
+    .m-decisions-box {
+      background: var(--primary-soft);
+      border-left: 3px solid var(--primary);
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    /* 투두 항목 */
+    .todo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .todo-row:hover {
+      border-color: #ffd1dc;
+    }
+    .todo-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .todo-checkbox {
+      accent-color: var(--primary); /* 옅은 파스텔 핑크 체크박스 (#ff8da1) */
+      width: 19px;
+      height: 19px;
+      cursor: pointer;
+    }
+    .completed-text {
+      text-decoration: line-through;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🌸 PROJECT-0</h1>
+    <p>2인 기획·개발 협업 관리 대시보드</p>
+  </header>
+
+  <!-- 🌸 상단 대문: 프로젝트 로드맵 (와이드 & 라지 사이즈) -->
+  <div style="background: white; border-radius: 16px; padding: 22px 28px; box-shadow: 0 4px 18px rgba(255, 183, 197, 0.25); border: 2px solid #ffd1dc; margin-bottom: 24px;">
+    
+    <!-- 대문 제목 헤더 -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px dashed #ffe4e9; padding-bottom: 10px;">
+      <span style="font-size: 1.15rem; font-weight: bold; color: #d85a7f; display: flex; align-items: center; gap: 8px;">
+        🗺️ 전체 프로젝트 로드맵
+      </span>
+      <span style="font-size: 0.88rem; background: #ffe4e9; color: #d85a7f; padding: 5px 12px; border-radius: 14px; font-weight: bold;">
+        현재 진행: STEP 2 진행 중 🚀
+      </span>
+    </div>
+
+    <!-- 4단계 가로 1줄 대형 로드맵 바 -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; overflow-x: auto;">
+      
+      <!-- STEP 1 (완료) -->
+      <div style="flex: 1; min-width: 170px; background: #f0fbf4; border: 2px solid #b7eec9; border-radius: 12px; padding: 14px 16px; text-align: center;">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #27ae60; margin-bottom: 4px;">STEP 1 (완료 ✅)</div>
+        <div style="font-size: 1.05rem; font-weight: bold; color: #2d3436;">기반 환경 구축</div>
+        <div style="font-size: 0.82rem; color: #636e72; margin-top: 4px;">Vercel 배포 & 모바일 연동</div>
+      </div>
+
+      <span style="color: #ffb7c5; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
+
+      <!-- STEP 2 (진행 중 - 강조) -->
+      <div style="flex: 1.1; min-width: 180px; background: #fff0f3; border: 2px solid #ff8fa3; border-radius: 12px; padding: 16px 18px; text-align: center; box-shadow: 0 4px 12px rgba(216, 90, 127, 0.15);">
+        <div style="font-size: 0.82rem; font-weight: bold; color: #d85a7f; margin-bottom: 4px;">STEP 2 (진행 중 🚀)</div>
+        <div style="font-size: 1.15rem; font-weight: 800; color: #d85a7f;">협업 대시보드 확장</div>
+        <div style="font-size: 0.85rem; color: #7f5262; margin-top: 4px; font-weight: 500;">메뉴 탭 구성 & 실시간 기록</div>
+      </div>
+
+      <span style="color: #ffd1dc; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
+
+      <!-- STEP 3 (예정) -->
+      <div style="flex: 1; min-width: 170px; background: #fbfbfb; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; text-align: center;">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #95a5a6; margin-bottom: 4px;">STEP 3 (예정)</div>
+        <div style="font-size: 1.05rem; font-weight: bold; color: #7f8c8d;">데이터 보관소</div>
+        <div style="font-size: 0.82rem; color: #95a5a6; margin-top: 4px;">녹화본 링크 & 자료 아카이빙</div>
+      </div>
+
+      <span style="color: #eee; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
+
+      <!-- STEP 4 (목표) -->
+      <div style="flex: 1; min-width: 170px; background: #fbfbfb; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; text-align: center;">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #bdc3c7; margin-bottom: 4px;">STEP 4 (목표)</div>
+        <div style="font-size: 1.05rem; font-weight: bold; color: #95a5a6;">핵심 기능 개발</div>
+        <div style="font-size: 0.82rem; color: #bdc3c7; margin-top: 4px;">본격적인 기능 구현 및 테스트</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 상단 탭 메뉴 (4개) -->
+  <div class="tab-bar">
+    <button id="btn-t" class="tab-btn active" onclick="switchTab('todos')">✅ 개발 진행</button>
+    <button id="btn-m" class="tab-btn" onclick="switchTab('meetings')">📋 회의록</button>
+    <button id="btn-i" class="tab-btn" onclick="switchTab('ideas')">💡 아이디어 / 메모</button>
+    <button id="btn-r" class="tab-btn" onclick="switchTab('resources')">📁 자료 & 녹화 링크</button>
+  </div>
+
+  <!-- 1. 회의록 탭 -->
+  <div id="tab-meetings" class="tab-content active">
+    <div class="form-group">
+      <label for="m-date">회의 날짜</label>
+      <input type="date" id="m-date">
+    </div>
+    <div class="form-group">
+      <label for="m-content">디스코드 통화 내용 / 요약</label>
+      <textarea id="m-content" placeholder="오늘 통화에서 나온 주요 내용을 적어보세요."></textarea>
+    </div>
+    <div class="form-group">
+      <label for="m-decisions">📌 결정된 사항 & 각자 할 일</label>
+      <textarea id="m-decisions" placeholder="예: [나] 파스텔 핑크 체크박스 적용 / [동료] 메인 로고 기획"></textarea>
+    </div>
+    <button class="pink-btn" onclick="saveMeeting()">회의록 저장하기</button>
+
+    <div class="list-container" id="meetings-list">
+      <!-- 회의록 카드 표시 위치 -->
+    </div>
+  </div>
+
+  <!-- 2. 투두 탭 -->
+  <div id="tab-todos" class="tab-content">
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <input type="text" id="todo-input" placeholder="오늘 할 작업을 적어주세요..." onkeypress="handleTodoKey(event)">
+      <button class="pink-btn" style="width: 80px;" onclick="addTodo()">추가</button>
+    </div>
+    <div class="list-container" id="todos-list">
+      <!-- 투두 항목 표시 위치 -->
+    </div>
+  </div>
+  
+  <!-- 3. 아이디어 / 메모 탭 -->
+  <div id="tab-ideas" class="tab-content" style="display: none;">
+    <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(255, 183, 197, 0.15); border: 1.5px solid #ffd1dc; margin-bottom: 20px;">
+      <h3 style="color: #d85a7f; margin: 0 0 12px 0; font-size: 1.05rem;">💡 새로운 아이디어 메모</h3>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" id="idea-title" placeholder="아이디어 제목 또는 핵심 키워드">
+        <textarea id="idea-desc" rows="2" placeholder="자유로운 생각, 아이디어 상세 메모를 적어주세요..."></textarea>
+        <button class="pink-btn" style="align-self: flex-end; padding: 8px 18px;" onclick="addIdea()">메모 남기기</button>
+      </div>
+    </div>
+    <!-- 아이디어 목록이 뜰 자리 -->
+    <div class="list-container" id="ideas-list"></div>
+  </div>
+
+  <!-- 4. 자료 & 녹화 링크 탭 -->
+  <div id="tab-resources" class="tab-content" style="display: none;">
+    <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(255, 183, 197, 0.15); border: 1.5px solid #ffd1dc; margin-bottom: 20px;">
+      <h3 style="color: #d85a7f; margin: 0 0 12px 0; font-size: 1.05rem;">📁 자료 & 디스코드 녹화 링크 보관</h3>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input type="text" id="res-title" placeholder="자료/영상 이름 (예: 1회차 디스코드 통화 녹화본)" style="flex: 1; min-width: 200px;">
+        <input type="url" id="res-url" placeholder="공유 링크 URL (https://...)" style="flex: 1.5; min-width: 250px;">
+        <button class="pink-btn" style="padding: 8px 18px;" onclick="addResource()">링크 저장</button>
+      </div>
+    </div>
+    <!-- 자료 링크 목록이 뜰 자리 -->
+    <div class="list-container" id="resources-list"></div>
+  </div>
+
+
+</div>
+
+<script>
+  // ==========================================
+  // 1] Supabase 접속 설정
+  // ==========================================
+  // 1. 키 설정
+  const SUPABASE_URL = "https://ykhsjjaspagnplzrabyy.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_N-orkQ3J2ew4kxCLMmiYSQ_0ioDhbi5";
+
+  // 2. 접속 객체 생성 (이름 충돌 방지를 위해 supabaseClient 로 확실하게 분리)
+  window.supabase = window.supabase.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : supabase;
+
+
+  // 오늘 날짜 기본 세팅
+  document.getElementById('m-date').valueAsDate = new Date();
+
+  // 탭 전환
+    function switchTab(type) {
+      // 1. 모든 탭 숨기기
+      const allTabs = ['meetings', 'todos', 'ideas', 'resources'];
+      allTabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (el) el.style.display = 'none';
+      });
+
+      // 2. 모든 버튼 비활성화
+      const allBtns = ['btn-m', 'btn-t', 'btn-i', 'btn-r'];
+      allBtns.forEach(b => {
+        const el = document.getElementById(b);
+        if (el) el.classList.remove('active');
+      });
+
+      // 3. 선택한 탭과 버튼 활성화
+      const targetTab = document.getElementById('tab-' + type);
+      if (targetTab) targetTab.style.display = 'block';
+
+      const btnMap = { 'todos': 'btn-t', 'meetings': 'btn-m', 'ideas': 'btn-i', 'resources': 'btn-r' };
+      const targetBtn = document.getElementById(btnMap[type]);
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+
+
+  // ==========================================
+  // 2. 투두리스트 (tasks 테이블)
+  // ==========================================
+  // --- [1. 투두(개발 진행) 기능: 인라인 수정 지원] ---
+  let editingTodoId = null;
+
+  async function loadTodos() {
+    const list = document.getElementById('todos-list');
+    if (!list) return;
+    const { data: todos, error } = await supabase.from('todos').select('*').order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (!todos || todos.length === 0) {
+      list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">등록된 작업이 없습니다. 오늘 할 일을 추가해 보세요! 🚀</div>';
+      return;
+    }
+
+    list.innerHTML = todos.map(todo => {
+      // 수정 모드일 때 카드 자리에서 바로 열리는 입력창
+      if (editingTodoId === todo.id) {
+        return `
+          <div style="padding: 10px 14px; margin-bottom: 8px; background: #fffafb; border-radius: 10px; border: 2px solid #ff8fa3; display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="edit-todo-task-${todo.id}" value="${escapeHtml(todo.task)}" style="flex: 1; padding: 6px 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">
+            <button onclick="saveEditTodo(${todo.id})" class="pink-btn" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px;">저장</button>
+            <button onclick="cancelEditTodo()" style="padding: 6px 12px; font-size: 0.8rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer;">취소</button>
+          </div>
+        `;
+      }
+
+      // 일반 모드 (체크박스 + 작업명 + 수정/삭제 버튼)
+      return `
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 8px; background: white; border-radius: 10px; border: 1.5px solid #ffe4e9;">
+          <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+            <input type="checkbox" ${todo.is_completed ? 'checked' : ''} onchange="toggleTodo(${todo.id}, this.checked)">
+            <span style="font-size: 0.95rem; color: ${todo.is_completed ? '#aaa' : '#333'}; text-decoration: ${todo.is_completed ? 'line-through' : 'none'}; word-break: break-all;">
+              ${escapeHtml(todo.task)}
+            </span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button onclick="startEditTodo(${todo.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold;">수정</button>
+            <button onclick="deleteTodo(${todo.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold;">삭제</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function startEditTodo(id) {
+    editingTodoId = id;
+    loadTodos();
+  }
+
+  function cancelEditTodo() {
+    editingTodoId = null;
+    loadTodos();
+  }
+
+  async function saveEditTodo(id) {
+    const input = document.getElementById(`edit-todo-task-${id}`);
+    const newTask = input.value.trim();
+    if (!newTask) {
+      alert('작업 내용을 입력해주세요!');
+      return;
+    }
+    await supabase.from('todos').update({ task: newTask }).eq('id', id);
+    editingTodoId = null;
+    loadTodos();
+  }
+
+  async function addTodo() {
+    const input = document.getElementById('todo-input');
+    const task = input.value.trim();
+    if (!task) return;
+    await supabase.from('todos').insert([{ task: task, is_completed: false }]);
+    input.value = '';
+    loadTodos();
+  }
+
+  function handleTodoKey(event) {
+    if (event.key === 'Enter') addTodo();
+  }
+
+  async function toggleTodo(id, status) {
+    await supabase.from('todos').update({ is_completed: status }).eq('id', id);
+    loadTodos();
+  }
+
+  async function deleteTodo(id) {
+    if (!confirm('이 작업을 삭제할까요?')) return;
+    await supabase.from('todos').delete().eq('id', id);
+    loadTodos();
+  }
+
+  function startEditTodo(id) {
+    editingTodoId = id;
+    loadTodos();
+  }
+
+  function cancelEditTodo() {
+    editingTodoId = null;
+    loadTodos();
+  }
+
+  async function saveEditTodo(id) {
+    const input = document.getElementById(`edit-todo-task-${id}`);
+    const newTask = input.value.trim();
+    if (!newTask) {
+      alert('작업 내용을 입력해주세요!');
+      return;
+    }
+    await supabase.from('todos').update({ task: newTask }).eq('id', id);
+    editingTodoId = null;
+    loadTodos();
+  }
+
+  async function addTodo() {
+    const input = document.getElementById('todo-input');
+    const task = input.value.trim();
+    if (!task) return;
+    await supabase.from('todos').insert([{ task: task, is_completed: false }]);
+    input.value = '';
+    loadTodos();
+  }
+
+  function handleTodoKey(event) {
+    if (event.key === 'Enter') addTodo();
+  }
+
+  async function toggleTodo(id, status) {
+    await supabase.from('todos').update({ is_completed: status }).eq('id', id);
+    loadTodos();
+  }
+
+  async function deleteTodo(id) {
+    if (!confirm('이 작업을 삭제할까요?')) return;
+    await supabase.from('todos').delete().eq('id', id);
+    loadTodos();
+  }
+
+  // 투두 내용 수정 함수
+  async function editTodo(id, currentTitle) {
+    const newTitle = prompt("수정할 내용을 입력해주세요:", currentTitle);
+    if (!newTitle || newTitle.trim() === "" || newTitle === currentTitle) return;
+
+    const { error } = await supabase
+      .from('tasks')
+      .update({ title: newTitle.trim() })
+      .eq('id', id);
+
+    if (error) {
+      alert("수정 실패: " + error.message);
+      return;
+    }
+    loadTodos();
+  }
+
+  async function addTodo() {
+    const input = document.getElementById('todo-input');
+    const title = input.value.trim();
+    if (!title) return;
+
+    const { error } = await supabase.from('tasks').insert([{ title: title, is_completed: false }]);
+    if (error) {
+      alert("할 일 저장 오류: " + error.message);
+      return;
+    }
+    input.value = "";
+    loadTodos();
+  }
+
+  function handleTodoKey(e) {
+    if (e.key === 'Enter') addTodo();
+  }
+
+  async function toggleTodo(id, current) {
+    await supabase.from('tasks').update({ is_completed: !current }).eq('id', id);
+    loadTodos();
+  }
+
+  async function deleteTodo(id) {
+    await supabase.from('tasks').delete().eq('id', id);
+    loadTodos();
+  }
+
+
+  
+  // ==========================================
+  // 3. 회의록 (meetings 테이블)
+  // ==========================================
+   // --- [2. 회의록 기능: 웹페이지 내 인라인 수정 포함] ---
+  let editingMeetingId = null;
+
+  async function loadMeetings() {
+    const list = document.getElementById('meetings-list');
+    if (!list) return;
+    const { data: meetings, error } = await supabase.from('meetings').select('*').order('date', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (!meetings || meetings.length === 0) {
+      list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">등록된 회의록이 없습니다. 첫 회의록을 작성해 보세요! 📝</div>';
+      return;
+    }
+
+    list.innerHTML = meetings.map(m => {
+      // 수정 모드일 때 카드 자리에서 열리는 입력창
+      if (editingMeetingId === m.id) {
+        return `
+          <div style="padding: 16px; margin-bottom: 14px; background: #fffafb; border-radius: 12px; border: 2px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 회의록 수정 중</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+              <input type="date" id="edit-m-date-${m.id}" value="${m.date}" style="padding: 6px 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">
+              <input type="text" id="edit-m-members-${m.id}" value="${escapeHtml(m.members || '')}" placeholder="참석자" style="flex: 1; min-width: 150px; padding: 6px 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">
+            </div>
+            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 8px 10px; margin-bottom: 8px; border: 1.5px solid #ffd1dc; border-radius: 6px;">${escapeHtml(m.content)}</textarea>
+            <textarea id="edit-m-decisions-${m.id}" rows="2" placeholder="결정 사항" style="width: 100%; box-sizing: border-box; padding: 8px 10px; margin-bottom: 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">${escapeHtml(m.decisions || '')}</textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button onclick="cancelEditMeeting()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
+              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem;">저장</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // 일반 모드 (오른쪽 위에 수정, 삭제 버튼 나란히)
+      return `
+        <div class="card" style="position: relative; padding: 18px; margin-bottom: 14px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 1.05rem; margin-bottom: 6px;">
+            📅 ${m.date} ${m.members ? `<span style="font-size: 0.85rem; color: #666; font-weight: normal;">(참석: ${escapeHtml(m.members)})</span>` : ''}
+          </div>
+          <div style="color: #333; font-size: 0.95rem; white-space: pre-wrap; line-height: 1.5; margin-bottom: 10px;">${escapeHtml(m.content)}</div>
+          ${m.decisions ? `
+            <div style="background: #fff0f3; padding: 10px 14px; border-radius: 8px; border-left: 3px solid #ff8fa3; font-size: 0.9rem; color: #7f5262;">
+              <strong>🎯 결정 사항:</strong><br>${escapeHtml(m.decisions)}
+            </div>
+          ` : ''}
+          
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px;">
+            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold;">수정</button>
+            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold;">삭제</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function startEditMeeting(id) {
+    editingMeetingId = id;
+    loadMeetings();
+  }
+
+  function cancelEditMeeting() {
+    editingMeetingId = null;
+    loadMeetings();
+  }
+
+  async function saveEditMeeting(id) {
+    const date = document.getElementById(`edit-m-date-${id}`).value;
+    const members = document.getElementById(`edit-m-members-${id}`).value.trim();
+    const content = document.getElementById(`edit-m-content-${id}`).value.trim();
+    const decisions = document.getElementById(`edit-m-decisions-${id}`).value.trim();
+
+    if (!content) {
+      alert('회의 내용은 비워둘 수 없습니다!');
+      return;
+    }
+
+    await supabase.from('meetings').update({ date, members, content, decisions }).eq('id', id);
+    editingMeetingId = null;
+    loadMeetings();
+  }
+
+  async function addMeeting() {
+    const date = document.getElementById('m-date').value;
+    const members = document.getElementById('m-members').value.trim();
+    const content = document.getElementById('m-content').value.trim();
+    const decisions = document.getElementById('m-decisions').value.trim();
+
+    if (!content) {
+      alert('회의 내용을 입력해주세요!');
+      return;
+    }
+
+    const { error } = await supabase.from('meetings').insert([{ date, members, content, decisions }]);
+    if (error) {
+      alert("회의록 저장 실패: " + error.message);
+      return;
+    }
+
+    document.getElementById('m-content').value = "";
+    document.getElementById('m-decisions').value = "";
+    loadMeetings();
+  }
+
+  async function deleteMeeting(id) {
+    if (!confirm("이 회의록을 삭제할까요?")) return;
+    await supabase.from('meetings').delete().eq('id', id);
+    loadMeetings();
+  }
+
+  async function saveMeeting() {
+    const date = document.getElementById('m-date').value;
+    const content = document.getElementById('m-content').value.trim();
+    const decisions = document.getElementById('m-decisions').value.trim();
+
+    if (!content && !decisions) {
+      alert("회의 내용이나 결정 사항을 한 줄 이상 적어주세요!");
+      return;
+    }
+
+    const { error } = await supabase.from('meetings').insert([
+      { meeting_date: date, content: content, decisions: decisions }
+    ]);
+
+    if (error) {
+      alert("회의록 저장 실패: " + error.message);
+      return;
+    }
+
+    document.getElementById('m-content').value = "";
+    document.getElementById('m-decisions').value = "";
+    loadMeetings();
+  }
+
+  async function deleteMeeting(id) {
+    if (!confirm("이 회의록을 삭제할까요?")) return;
+    await supabase.from('meetings').delete().eq('id', id);
+    loadMeetings();
+  }
+
+
+
+  // --- [아이디어 메모 기능 (인라인 수정 지원)] ---
+  let ideas = JSON.parse(localStorage.getItem('p0_ideas') || '[]');
+  let editingIdeaIdx = null;
+
+  function renderIdeas() {
+    const container = document.getElementById('ideas-list');
+    if (!container) return;
+    if (ideas.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">아직 등록된 아이디어가 없습니다. 떠오르는 생각을 가볍게 남겨보세요! ✨</div>';
+      return;
+    }
+    container.innerHTML = ideas.map((item, idx) => {
+      // 수정 모드일 때 보여줄 인라인 입력 폼
+      if (editingIdeaIdx === idx) {
+        return `
+          <div style="padding: 16px; margin-bottom: 12px; background: #fffafb; border-radius: 12px; border: 2px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 아이디어 수정 중</div>
+            <input type="text" id="edit-idea-title-${idx}" value="${escapeHtml(item.title)}" style="width: 100%; box-sizing: border-box; padding: 8px 12px; margin-bottom: 8px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
+            <textarea id="edit-idea-desc-${idx}" rows="2" style="width: 100%; box-sizing: border-box; padding: 8px 12px; margin-bottom: 10px; border: 1.5px solid #ffd1dc; border-radius: 8px;">${escapeHtml(item.desc)}</textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button onclick="cancelEditIdea()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
+              <button onclick="saveEditIdea(${idx})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem;">저장</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // 평상시 일반 카드 모드
+      return `
+        <div style="position: relative; padding: 16px; margin-bottom: 12px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 1rem; margin-bottom: 6px;">💡 ${escapeHtml(item.title)}</div>
+          <div style="color: #444; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(item.desc)}</div>
+          <div style="font-size: 0.75rem; color: #aaa; margin-top: 8px;">${item.date}</div>
+          
+          <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
+            <button onclick="startEditIdea(${idx})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold;">수정</button>
+            <button onclick="deleteIdea(${idx})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold;">삭제</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function addIdea() {
+    const titleInput = document.getElementById('idea-title');
+    const descInput = document.getElementById('idea-desc');
+    const title = titleInput.value.trim();
+    const desc = descInput.value.trim();
+
+    if (!title) {
+      alert('아이디어 제목을 입력해주세요!');
+      return;
+    }
+
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    ideas.unshift({ title, desc, date: dateStr });
+    localStorage.setItem('p0_ideas', JSON.stringify(ideas));
+    titleInput.value = '';
+    descInput.value = '';
+    renderIdeas();
+  }
+
+  function startEditIdea(idx) {
+    editingIdeaIdx = idx;
+    renderIdeas();
+  }
+
+  function cancelEditIdea() {
+    editingIdeaIdx = null;
+    renderIdeas();
+  }
+
+  function saveEditIdea(idx) {
+    const newTitle = document.getElementById(`edit-idea-title-${idx}`).value.trim();
+    const newDesc = document.getElementById(`edit-idea-desc-${idx}`).value.trim();
+
+    if (!newTitle) {
+      alert('아이디어 제목은 비워둘 수 없습니다!');
+      return;
+    }
+
+    ideas[idx].title = newTitle;
+    ideas[idx].desc = newDesc;
+    localStorage.setItem('p0_ideas', JSON.stringify(ideas));
+    editingIdeaIdx = null;
+    renderIdeas();
+  }
+
+  function deleteIdea(idx) {
+    if (confirm('이 아이디어를 삭제할까요?')) {
+      ideas.splice(idx, 1);
+      localStorage.setItem('p0_ideas', JSON.stringify(ideas));
+      renderIdeas();
+    }
+  }
+
+  // --- [자료 & 녹화 링크 기능 (수정 및 인라인 수정 지원)] ---
+  let resources = JSON.parse(localStorage.getItem('p0_resources') || '[]');
+  let editingResourceIdx = null;
+
+   // --- [1. 자료 & 녹화 링크 렌더링 (가로 버튼 + 링크 클릭 시 새 탭)] ---
+  function renderResources() {
+    const container = document.getElementById('resources-list');
+    if (!container) return;
+    if (resources.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">아직 저장된 링크가 없습니다. 디스코드 녹화 링크나 드라이브 주소를 보관해 보세요! 📁</div>';
+      return;
+    }
+    container.innerHTML = resources.map((item, idx) => {
+      // 수정 모드일 때
+      if (editingResourceIdx === idx) {
+        return `
+          <div style="padding: 16px; margin-bottom: 12px; background: #fffafb; border-radius: 12px; border: 2px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 링크 정보 수정 중</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+              <input type="text" id="edit-res-title-${idx}" value="${escapeHtml(item.title)}" style="flex: 1; min-width: 180px; padding: 8px 12px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
+              <input type="url" id="edit-res-url-${idx}" value="${escapeHtml(item.url)}" style="flex: 1.5; min-width: 220px; padding: 8px 12px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button onclick="cancelEditResource()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
+              <button onclick="saveEditResource(${idx})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem;">저장</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // 일반 모드 (바로가기 버튼 없이 링크 누르면 새 탭, 수정/삭제 가로 나란히)
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; flex-wrap: nowrap; gap: 12px; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+            <span style="font-size: 1.3rem; flex-shrink: 0;">🎬</span>
+            <div style="min-width: 0; overflow: hidden;">
+              <div style="font-weight: bold; color: #333; font-size: 0.95rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(item.title)}
+              </div>
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.85rem; text-decoration: underline; word-break: break-all; display: inline-block;">
+                ${escapeHtml(item.url)} ↗
+              </a>
+            </div>
+          </div>
+          <!-- 가로로 나란히 있는 수정 / 삭제 버튼 -->
+          <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; flex-shrink: 0;">
+            <button onclick="startEditResource(${idx})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">수정</button>
+            <button onclick="deleteResource(${idx})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">삭제</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function addResource() {
+    const titleInput = document.getElementById('res-title');
+    const urlInput = document.getElementById('res-url');
+    const title = titleInput.value.trim();
+    let url = urlInput.value.trim();
+
+    if (!title || !url) {
+      alert('자료 이름과 링크 URL을 모두 입력해주세요!');
+      return;
+    }
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    resources.unshift({ title, url });
+    localStorage.setItem('p0_resources', JSON.stringify(resources));
+    titleInput.value = '';
+    urlInput.value = '';
+    renderResources();
+  }
+
+  function startEditResource(idx) {
+    editingResourceIdx = idx;
+    renderResources();
+  }
+
+  function cancelEditResource() {
+    editingResourceIdx = null;
+    renderResources();
+  }
+
+  function saveEditResource(idx) {
+    const newTitle = document.getElementById(`edit-res-title-${idx}`).value.trim();
+    let newUrl = document.getElementById(`edit-res-url-${idx}`).value.trim();
+
+    if (!newTitle || !newUrl) {
+      alert('자료 이름과 링크 URL을 모두 입력해주세요!');
+      return;
+    }
+
+    if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
+      newUrl = 'https://' + newUrl;
+    }
+
+    resources[idx].title = newTitle;
+    resources[idx].url = newUrl;
+    localStorage.setItem('p0_resources', JSON.stringify(resources));
+    editingResourceIdx = null;
+    renderResources();
+  }
+
+  function deleteResource(idx) {
+    if (confirm('이 링크를 삭제할까요?')) {
+      resources.splice(idx, 1);
+      localStorage.setItem('p0_resources', JSON.stringify(resources));
+      renderResources();
+    }
+  }
+
+  // 보안 글자 변환
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  // --- [4개 탭 완벽 전환 함수] ---
+  window.switchTab = function(type) {
+    const allTabs = ['meetings', 'todos', 'ideas', 'resources'];
+    allTabs.forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.style.display = 'none';
+    });
+
+    const allBtns = ['btn-m', 'btn-t', 'btn-i', 'btn-r'];
+    allBtns.forEach(b => {
+      const el = document.getElementById(b);
+      if (el) el.classList.remove('active');
+    });
+
+    const targetTab = document.getElementById('tab-' + type);
+    if (targetTab) targetTab.style.display = 'block';
+
+    const btnMap = { 'todos': 'btn-t', 'meetings': 'btn-m', 'ideas': 'btn-i', 'resources': 'btn-r' };
+    const targetBtn = document.getElementById(btnMap[type]);
+    if (targetBtn) targetBtn.classList.add('active');
+  };
+
+  // 초기 데이터 전체 불러오기
+  loadTodos();
+  loadMeetings();
+  renderIdeas();
+  renderResources();
+
+
+
+</script>
+
+</body>
+</html>
