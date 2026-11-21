@@ -25,6 +25,53 @@
       padding: 8px 6px;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* 🔒 비밀번호 잠금 화면 모달 */
+    #lock-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(250, 247, 248, 0.95);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .lock-box {
+      background: white;
+      padding: 24px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(255, 141, 161, 0.25);
+      border: 1.5px solid #ffd1dc;
+      text-align: center;
+      width: 90%;
+      max-width: 320px;
+    }
+    .lock-box h2 {
+      font-size: 1.15rem;
+      color: #d85a7f;
+      margin-bottom: 6px;
+    }
+    .lock-box p {
+      font-size: 0.8rem;
+      color: #718096;
+      margin-bottom: 16px;
+    }
+    .pin-input {
+      width: 140px;
+      text-align: center;
+      font-size: 1.4rem;
+      letter-spacing: 8px;
+      padding: 8px 10px;
+      border: 1.5px solid #ffd1dc;
+      border-radius: 8px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .pin-input:focus {
+      border-color: var(--primary);
     }
 
     .container {
@@ -37,8 +84,9 @@
       border: 1px solid var(--border);
     }
 
-    /* 헤더 (모바일 기본: 슬림) */
+    /* 헤더 */
     header {
+      position: relative;
       padding: 10px 12px 8px;
       text-align: center;
       background: linear-gradient(180deg, #ffffff 0%, var(--primary-soft) 100%);
@@ -57,8 +105,21 @@
       font-size: 0.75rem;
       color: var(--text-muted);
     }
+    .logout-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: white;
+      border: 1px solid #ffd1dc;
+      color: #d85a7f;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-    /* 🗺️ 로드맵 (모바일 기본: 초슬림) */
+    /* 🗺️ 로드맵 (반응형) */
     .roadmap-card {
       background: white;
       border-radius: 10px;
@@ -122,13 +183,13 @@
       margin-top: 1px;
     }
     .step-desc {
-      display: none; /* 모바일에서는 숨겨서 슬림 유지 */
+      display: none;
       font-size: 0.7rem;
       color: #718096;
       margin-top: 2px;
     }
 
-    /* 탭 바 (모바일 기본) */
+    /* 탭 바 */
     .tab-bar {
       display: flex;
       background: #fdf2f4;
@@ -194,7 +255,7 @@
       min-height: 55px;
     }
 
-    /* 핑크 메인 버튼 */
+    /* 핑크 버튼 */
     .pink-btn {
       width: 100%;
       padding: 8px 12px;
@@ -219,99 +280,54 @@
       gap: 6px;
     }
 
-    /* ================================================= */
-    /* 🖥️ PC / 웹 화면 전용 스타일 (너비 768px 이상일 때 자동 확대) */
-    /* ================================================= */
+    /* PC 전용 스타일 (너비 768px 이상) */
     @media (min-width: 768px) {
-      body {
-        padding: 24px 16px;
-      }
-      .container {
-        border-radius: 18px;
-      }
-      header {
-        padding: 20px 20px 14px;
-      }
-      header h1 {
-        font-size: 1.45rem;
-      }
-      header p {
-        font-size: 0.88rem;
-      }
+      body { padding: 24px 16px; }
+      .container { border-radius: 18px; }
+      header { padding: 20px 20px 14px; }
+      header h1 { font-size: 1.45rem; }
+      header p { font-size: 0.88rem; }
+      .logout-btn { top: 16px; right: 18px; font-size: 0.75rem; padding: 4px 10px; }
 
-      /* 🗺️ PC에서 시원시원해지는 로드맵 */
-      .roadmap-card {
-        padding: 16px 20px;
-        margin: 14px 16px 8px;
-        border-radius: 14px;
-      }
-      .roadmap-header {
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-      }
-      .roadmap-title {
-        font-size: 1.05rem;
-      }
-      .roadmap-badge {
-        font-size: 0.82rem;
-        padding: 4px 12px;
-        border-radius: 14px;
-      }
-      .roadmap-steps {
-        gap: 10px;
-      }
-      .step-box {
-        min-width: 140px;
-        padding: 12px 14px;
-        border-radius: 10px;
-      }
-      .step-label {
-        font-size: 0.72rem;
-      }
-      .step-name {
-        font-size: 0.95rem;
-        margin-top: 3px;
-      }
-      .step-desc {
-        display: block; /* PC에서는 상세 설명도 친절하게 표시 */
-      }
-      .step-arrow {
-        font-size: 1.1rem;
-      }
+      .roadmap-card { padding: 16px 20px; margin: 14px 16px 8px; border-radius: 14px; }
+      .roadmap-header { margin-bottom: 12px; padding-bottom: 8px; }
+      .roadmap-title { font-size: 1.05rem; }
+      .roadmap-badge { font-size: 0.82rem; padding: 4px 12px; }
+      .roadmap-steps { gap: 10px; }
+      .step-box { min-width: 140px; padding: 12px 14px; border-radius: 10px; }
+      .step-label { font-size: 0.72rem; }
+      .step-name { font-size: 0.95rem; margin-top: 3px; }
+      .step-desc { display: block; }
+      .step-arrow { font-size: 1.1rem; }
 
-      /* 탭 및 내용 확장 */
-      .tab-bar {
-        padding: 5px;
-        gap: 5px;
-      }
-      .tab-btn {
-        padding: 10px 8px;
-        font-size: 0.92rem;
-        border-radius: 10px;
-      }
-      .tab-content {
-        padding: 20px 18px;
-      }
-      input[type="text"], input[type="date"], input[type="url"], textarea {
-        padding: 9px 12px;
-        font-size: 0.92rem;
-      }
-      .pink-btn {
-        padding: 10px 16px;
-        font-size: 0.92rem;
-      }
+      .tab-bar { padding: 5px; gap: 5px; }
+      .tab-btn { padding: 10px 8px; font-size: 0.92rem; border-radius: 10px; }
+      .tab-content { padding: 20px 18px; }
+      input[type="text"], input[type="date"], input[type="url"], textarea { padding: 9px 12px; font-size: 0.92rem; }
+      .pink-btn { padding: 10px 16px; font-size: 0.92rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+<!-- 🔒 비밀번호 입력 팝업 화면 -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <h2>🔒 PROJECT-0</h2>
+    <p>우리 팀 4자리 비밀번호를 입력해주세요.</p>
+    <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" onkeypress="handlePinKey(event)" autofocus>
+    <button class="pink-btn" onclick="checkPin()">접속하기</button>
+  </div>
+</div>
+
+<div class="container" id="app-container" style="display: none;">
   <header>
     <h1>🌸 PROJECT-0</h1>
     <p>2인 기획·개발 협업 대시보드</p>
+    <button class="logout-btn" onclick="logout()">🔒 잠금</button>
   </header>
 
-  <!-- 🗺️ 반응형 로드맵 (모바일은 슬림, PC는 큼직) -->
+  <!-- 🗺️ 반응형 로드맵 -->
   <div class="roadmap-card">
     <div class="roadmap-header">
       <span class="roadmap-title">🗺️ 프로젝트 로드맵</span>
@@ -407,6 +423,54 @@
 </div>
 
 <script>
+  // ==========================================
+  // 🔑 우리 둘만의 4자리 비밀번호 설정
+  // ==========================================
+  const TEAM_PASSWORD = "0000"; // 필요시 원하는 4자리 숫자로 변경 가능!
+
+  function checkPin() {
+    const input = document.getElementById('pin-input');
+    if (input.value === TEAM_PASSWORD) {
+      localStorage.setItem('project0_auth', 'passed');
+      unlockApp();
+    } else {
+      alert('비밀번호가 올바르지 않습니다! ❌');
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  function handlePinKey(event) {
+    if (event.key === 'Enter') checkPin();
+  }
+
+  function unlockApp() {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    // 앱 접속 성공 시 데이터 불러오기 시작
+    switchTab('tasks');
+    loadTasks();
+    loadMeetings();
+    loadIdeas();
+    loadResources();
+  }
+
+  function logout() {
+    if (!confirm('화면을 잠그고 로그아웃할까요?')) return;
+    localStorage.removeItem('project0_auth');
+    location.reload();
+  }
+
+  // 이전에 비밀번호를 입력해서 통과한 기록이 있는지 확인 (자동 로그인)
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('project0_auth') === 'passed') {
+      unlockApp();
+    } else {
+      document.getElementById('lock-screen').style.display = 'flex';
+      document.getElementById('app-container').style.display = 'none';
+    }
+  });
+
   // ==========================================
   // 1. Supabase 접속 설정
   // ==========================================
@@ -799,15 +863,6 @@
     if (error) { alert("삭제 실패: " + error.message); return; }
     loadResources();
   }
-
-  // ==========================================
-  // 7. 앱 시작 시 데이터 로드
-  // ==========================================
-  switchTab('tasks');
-  loadTasks();
-  loadMeetings();
-  loadIdeas();
-  loadResources();
 </script>
 
 </body>
