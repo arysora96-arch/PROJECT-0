@@ -86,7 +86,7 @@ function setMetaCache(key, id, field, value) {
 }
 
 // ==========================================
-// 3. 상태 관리 (정렬 & 필터)
+// 3. 상태 관리 (정렬 & 필터 & 탭)
 // ==========================================
 const sortStates = { tasks: 'desc', meetings: 'desc', ideas: 'desc', resources: 'desc' };
 const filterStates = { ideas: 'all', resources: 'all' };
@@ -147,7 +147,7 @@ function selectEditColor(type, id, color, el) {
   el.style.transform = 'scale(1.35)';
 }
 
-window.switchTab = function(type) {
+function switchTab(type) {
   ['tasks', 'meetings', 'ideas', 'resources'].forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) { el.classList.remove('active'); el.style.display = 'none'; }
@@ -162,7 +162,7 @@ window.switchTab = function(type) {
   const btnMap = { 'tasks': 'btn-t', 'meetings': 'btn-m', 'ideas': 'btn-i', 'resources': 'btn-r' };
   const targetBtn = document.getElementById(btnMap[type]);
   if (targetBtn) targetBtn.classList.add('active');
-};
+}
 
 // ==========================================
 // 4. 진행목록 (tasks)
@@ -196,8 +196,8 @@ async function loadTasks() {
       return `
         <div style="padding: 10px; margin-bottom: 5px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 2; min-width: 150px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.88rem; color: var(--rose-deep);">
-            <input type="text" id="edit-task-author-${task.id}" value="${escapeHtml(task.author)}" placeholder="작성자" style="flex: 1; min-width: 80px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.88rem; color: var(--rose-deep);">
+            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 2; min-width: 150px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.88rem; color: var(--rose-medium);">
+            <input type="text" id="edit-task-author-${task.id}" value="${escapeHtml(task.author)}" placeholder="작성자" style="flex: 1; min-width: 80px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 0.88rem; color: var(--rose-medium);">
           </div>
           <div style="display: flex; justify-content: flex-end; gap: 6px;">
             <button onclick="cancelEditTask()" style="padding: 4px 10px; font-size: 0.8rem; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; color: var(--rose-medium);">취소</button>
@@ -213,11 +213,13 @@ async function loadTasks() {
 
     return `
       <div style="position: relative; padding: 6px 10px 4px; margin-bottom: 4px; background: white; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 3px;">
-        <div style="display: flex; align-items: flex-start; gap: 7px; width: 100%;">
+        <div class="styled-content-box" style="display: flex !important; align-items: flex-start; gap: 8px; padding: 7px 10px !important;">
           <input type="checkbox" class="custom-check" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)">
-          <div class="styled-content-box" style="flex: 1; min-width: 0; text-decoration: ${isDone ? 'line-through' : 'none'}; color: ${isDone ? 'var(--rose-muted)' : 'var(--rose-deep)'}; font-weight: ${isDone ? '400' : '700'};">${escapeHtml(task.title || '')}</div>
+          <div style="flex: 1; min-width: 0; text-decoration: ${isDone ? 'line-through' : 'none'}; color: ${isDone ? 'var(--rose-muted)' : 'var(--rose-medium)'}; font-weight: ${isDone ? '400' : '700'}; word-break: break-all;">
+            ${escapeHtml(task.title || '')}
+          </div>
         </div>
-        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding-left: 24px;">
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding-right: 2px;">
           ${authorText ? `<span style="font-size: 0.73rem; color: var(--rose-muted); font-weight: 600; line-height: 1;">${authorText}</span>` : ''}
           <span style="font-size: 0.72rem; color: var(--rose-muted); line-height: 1;">${dateTimeStr}</span>
           <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleTaskStar(${task.id}, ${!isStarred})" title="중요 표시">★</button>
@@ -229,11 +231,6 @@ async function loadTasks() {
   }).join('');
 }
 
-async function toggleTaskStar(id, nextVal) {
-  setMetaCache('tasks', id, 'is_starred', nextVal);
-  await supabase.from('tasks').update({ is_starred: nextVal }).eq('id', id);
-  loadTasks();
-}
 function startEditTask(id) { editingTaskId = id; loadTasks(); }
 function cancelEditTask() { editingTaskId = null; loadTasks(); }
 
@@ -244,9 +241,18 @@ async function saveEditTask(id) {
   if (!newTitle) { alert('작업 내용을 입력해주세요.'); return; }
   
   setMetaCache('tasks', id, 'author', newAuthor);
+  
   let { error } = await supabase.from('tasks').update({ title: newTitle, author: newAuthor }).eq('id', id);
-  if (error) await supabase.from('tasks').update({ title: newTitle }).eq('id', id);
+  if (error) {
+    await supabase.from('tasks').update({ title: newTitle }).eq('id', id);
+  }
   editingTaskId = null;
+  loadTasks();
+}
+
+async function toggleTaskStar(id, nextVal) {
+  setMetaCache('tasks', id, 'is_starred', nextVal);
+  await supabase.from('tasks').update({ is_starred: nextVal }).eq('id', id);
   loadTasks();
 }
 
@@ -262,19 +268,21 @@ async function addTask() {
     const retry = await supabase.from('tasks').insert([{ title: taskTitle, is_completed: false }]).select();
     data = retry.data;
   }
-  const newId = (data && data) ? data.id : (data ? data.id : null);
+  const newId = (data && data[0]) ? data[0].id : (data ? data.id : null);
   if (newId) setMetaCache('tasks', newId, 'author', author);
 
   input.value = '';
   if (authorInput) authorInput.value = '';
   loadTasks();
 }
+
 function handleTaskKey(event) { if (event.key === 'Enter') addTask(); }
 
 async function toggleTask(id, status) {
   await supabase.from('tasks').update({ is_completed: status }).eq('id', id);
   loadTasks();
 }
+
 async function deleteTask(id) {
   if (!confirm('이 작업을 삭제할까요?')) return;
   await supabase.from('tasks').delete().eq('id', id);
@@ -321,12 +329,12 @@ async function loadMeetings() {
     if (editingMeetingId === m.id) {
       return `
         <div style="padding: 10px; margin-bottom: 6px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary);">
-          <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 5px; font-size: 0.85rem;">회의록 수정</div>
+          <div style="font-weight: 800; color: var(--rose-medium); margin-bottom: 5px; font-size: 0.85rem;">회의록 수정</div>
           <div style="display: flex; gap: 6px; margin-bottom: 5px; flex-wrap: wrap;">
-            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="flex: 1; padding: 5px 7px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
-            <input type="text" id="edit-m-author-${m.id}" value="${escapeHtml(m.author)}" placeholder="작성자" style="flex: 1; padding: 5px 7px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
+            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="flex: 1; padding: 5px 7px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
+            <input type="text" id="edit-m-author-${m.id}" value="${escapeHtml(m.author)}" placeholder="작성자" style="flex: 1; padding: 5px 7px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
           </div>
-          <textarea id="edit-m-content-${m.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 6px 8px; margin-bottom: 6px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">${escapeHtml(m.content || '')}</textarea>
+          <textarea id="edit-m-content-${m.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 6px 8px; margin-bottom: 6px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-medium);">${escapeHtml(m.content || '')}</textarea>
           <div style="display: flex; justify-content: flex-end; gap: 5px;">
             <button onclick="cancelEditMeeting()" style="padding: 4px 10px; border: 1px solid var(--border-strong); background: white; border-radius: 6px; cursor: pointer; font-size: 0.8rem; color: var(--rose-medium);">취소</button>
             <button onclick="saveEditMeeting(${m.id})" class="rose-btn" style="padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; width: auto;">저장</button>
@@ -336,27 +344,22 @@ async function loadMeetings() {
     }
 
     return `
-      <div style="position: relative; padding: 6px 10px 4px; margin-bottom: 4px; background: white; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column;">
-        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-bottom: 2px;">
+      <div style="position: relative; padding: 6px 10px 4px; margin-bottom: 4px; background: white; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 3px;">
+        <div class="styled-content-box" style="padding: 7px 10px !important;">
+          ${escapeHtml(m.content || '')}
+        </div>
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding-right: 2px;">
+          ${authorText ? `<span style="font-size: 0.73rem; color: var(--rose-muted); font-weight: 600; line-height: 1;">${authorText}</span>` : ''}
+          <span style="font-size: 0.72rem; color: var(--rose-muted); line-height: 1;">${dateTimeStr || m.meeting_date || ''}</span>
           <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleMeetingStar(${m.id}, ${!isStarred})" title="중요 표시">★</button>
           <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">수정</button>
           <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">삭제</button>
-        </div>
-        <div class="styled-content-box" style="margin-bottom: 3px;">${escapeHtml(m.content || '')}</div>
-        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-          ${authorText ? `<span style="font-size: 0.73rem; color: var(--rose-muted); font-weight: 600; line-height: 1;">${authorText}</span>` : ''}
-          <span style="font-size: 0.72rem; color: var(--rose-muted); line-height: 1;">${dateTimeStr || m.meeting_date || ''}</span>
         </div>
       </div>
     `;
   }).join('');
 }
 
-async function toggleMeetingStar(id, nextVal) {
-  setMetaCache('meetings', id, 'is_starred', nextVal);
-  await supabase.from('meetings').update({ is_starred: nextVal }).eq('id', id);
-  loadMeetings();
-}
 function startEditMeeting(id) { editingMeetingId = id; loadMeetings(); }
 function cancelEditMeeting() { editingMeetingId = null; loadMeetings(); }
 
@@ -367,9 +370,18 @@ async function saveEditMeeting(id) {
   if (!content) { alert('회의 내용을 입력해주세요.'); return; }
   
   setMetaCache('meetings', id, 'author', author);
+  
   let { error } = await supabase.from('meetings').update({ meeting_date: date, content: content, author: author }).eq('id', id);
-  if (error) await supabase.from('meetings').update({ meeting_date: date, content: content }).eq('id', id);
+  if (error) {
+    await supabase.from('meetings').update({ meeting_date: date, content: content }).eq('id', id);
+  }
   editingMeetingId = null;
+  loadMeetings();
+}
+
+async function toggleMeetingStar(id, nextVal) {
+  setMetaCache('meetings', id, 'is_starred', nextVal);
+  await supabase.from('meetings').update({ is_starred: nextVal }).eq('id', id);
   loadMeetings();
 }
 
@@ -384,12 +396,13 @@ async function addMeeting() {
     const retry = await supabase.from('meetings').insert([{ meeting_date: date, content: content }]).select();
     data = retry.data;
   }
-  const newId = (data && data) ? data.id : (data ? data.id : null);
+  const newId = (data && data[0]) ? data[0].id : (data ? data.id : null);
   if (newId) setMetaCache('meetings', newId, 'author', author);
 
   document.getElementById('m-content').value = "";
   loadMeetings();
 }
+
 async function deleteMeeting(id) {
   if (!confirm("이 회의록을 삭제할까요?")) return;
   await supabase.from('meetings').delete().eq('id', id);
@@ -436,12 +449,12 @@ async function loadIdeas() {
     if (editingIdeaId === item.id) {
       return `
         <div style="padding: 10px; margin-bottom: 6px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column;">
-          <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 5px; font-size: 0.85rem;">아이디어 수정</div>
+          <div style="font-weight: 800; color: var(--rose-medium); margin-bottom: 5px; font-size: 0.85rem;">아이디어 수정</div>
           <div style="display: flex; gap: 6px; margin-bottom: 5px; flex-wrap: wrap;">
-            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="아이디어 제목" style="flex: 1.6; min-width: 140px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
-            <input type="text" id="edit-idea-author-${item.id}" value="${escapeHtml(item.author)}" placeholder="작성자" style="flex: 1; min-width: 90px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
+            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="아이디어 제목" style="flex: 1.6; min-width: 140px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
+            <input type="text" id="edit-idea-author-${item.id}" value="${escapeHtml(item.author)}" placeholder="작성자" style="flex: 1; min-width: 90px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
           </div>
-          <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">${escapeHtml(item.description || '')}</textarea>
+          <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">${escapeHtml(item.description || '')}</textarea>
           
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 3px;">
             <div style="display: flex; align-items: center; gap: 5px;">
@@ -468,19 +481,20 @@ async function loadIdeas() {
     const dateTimeStr = formatDateTime(item.created_at);
 
     return `
-      <div class="card-item" style="padding: 6px 10px 6px 14px; margin-bottom: 4px; display: flex; flex-direction: column;">
+      <div class="card-item" style="padding: 6px 10px 4px 14px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 3px;">
         <div class="card-bookmark-strip" style="background-color: ${colorHex};"></div>
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-          <span style="font-weight: 400; color: var(--rose-deep); font-size: 0.94rem; padding-left: 8px;">${escapeHtml(item.title || '')}</span>
-          <div style="display: flex; align-items: center; gap: 5px;">
-            <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">수정</button>
-            <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">삭제</button>
+        <div class="resource-content-card" style="margin-bottom: 0;">
+          <div class="resource-card-title">
+            <span>💡</span>
+            <span>${escapeHtml(item.title || '')}</span>
           </div>
+          <div class="resource-card-desc">${escapeHtml(item.description || '메모된 내용이 없습니다.')}</div>
         </div>
-        <div class="styled-content-box" style="margin-bottom: 4px;">${escapeHtml(item.description || '')}</div>
         <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 2px;">
           ${authorText ? `<span style="font-size: 0.73rem; color: var(--rose-muted); font-weight: 600; line-height: 1;">${authorText}</span>` : ''}
           <span style="font-size: 0.72rem; color: var(--rose-muted); line-height: 1;">${dateTimeStr}</span>
+          <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: var(--rose-medium); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">수정</button>
+          <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: var(--rose-muted); cursor: pointer; font-size: 0.78rem; font-weight: 700; padding: 0 1px;">삭제</button>
         </div>
       </div>
     `;
@@ -499,8 +513,14 @@ async function saveEditIdea(id) {
   
   setMetaCache('ideas', id, 'author', author);
   setMetaCache('ideas', id, 'bookmark_color', color);
+  
   let { error } = await supabase.from('ideas').update({ title: title, description: desc, author: author, bookmark_color: color }).eq('id', id);
-  if (error) await supabase.from('ideas').update({ title: title, description: desc }).eq('id', id);
+  if (error) {
+    let retry = await supabase.from('ideas').update({ title: title, description: desc }).eq('id', id);
+    if (retry.error) {
+      await supabase.from('ideas').update({ title: title }).eq('id', id);
+    }
+  }
   editingIdeaId = null;
   loadIdeas();
 }
@@ -521,7 +541,7 @@ async function addIdea() {
     const retry = await supabase.from('ideas').insert([{ title: title, description: desc }]).select();
     data = retry.data;
   }
-  const newId = (data && data) ? data.id : (data ? data.id : null);
+  const newId = (data && data[0]) ? data[0].id : (data ? data.id : null);
   if (newId) {
     setMetaCache('ideas', newId, 'author', author);
     setMetaCache('ideas', newId, 'bookmark_color', color);
@@ -534,6 +554,7 @@ async function addIdea() {
   document.querySelectorAll('#idea-color-picker .color-dot').forEach((d, idx) => d.style.transform = idx === 0 ? 'scale(1.35)' : 'scale(1)');
   loadIdeas();
 }
+
 async function deleteIdea(id) {
   if (!confirm('이 아이디어를 삭제할까요?')) return;
   await supabase.from('ideas').delete().eq('id', id);
@@ -585,13 +606,13 @@ async function loadResources() {
     if (editingResourceId === item.id) {
       return `
         <div style="padding: 10px; margin-bottom: 6px; background: var(--primary-soft); border-radius: 8px; border: 1.2px solid var(--primary); display: flex; flex-direction: column;">
-          <div style="font-weight: 800; color: var(--rose-deep); margin-bottom: 5px; font-size: 0.85rem;">자료 수정</div>
+          <div style="font-weight: 800; color: var(--rose-medium); margin-bottom: 5px; font-size: 0.85rem;">자료 수정</div>
           <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 5px;">
-            <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="자료 이름" style="flex: 1.2; min-width: 130px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
-            <input type="text" id="edit-res-author-${item.id}" value="${escapeHtml(item.author)}" placeholder="작성자" style="flex: 0.8; min-width: 80px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
-            <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" placeholder="URL 링크" style="flex: 1.5; min-width: 150px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-deep);">
+            <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" placeholder="자료 이름" style="flex: 1.2; min-width: 130px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
+            <input type="text" id="edit-res-author-${item.id}" value="${escapeHtml(item.author)}" placeholder="작성자" style="flex: 0.8; min-width: 80px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
+            <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" placeholder="URL 링크" style="flex: 1.5; min-width: 150px; padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.85rem; color: var(--rose-medium);">
           </div>
-          <textarea id="edit-res-desc-${item.id}" rows="2" placeholder="자료 세부내용" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-deep);">${escapeHtml(item.description || '')}</textarea>
+          <textarea id="edit-res-desc-${item.id}" rows="2" placeholder="자료 세부내용" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid var(--border-strong); border-radius: 6px; font-size:0.88rem; color: var(--rose-medium);">${escapeHtml(item.description || '')}</textarea>
           
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 3px;">
             <div style="display: flex; align-items: center; gap: 5px;">
@@ -617,8 +638,8 @@ async function loadResources() {
     const dateTimeStr = formatDateTime(item.created_at);
 
     return `
-      <div class="card-item" style="padding: 8px 10px 6px 10px; margin-bottom: 4px; display: flex; flex-direction: column;">
-        <div class="resource-content-card">
+      <div class="card-item" style="padding: 6px 10px 4px 10px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 3px;">
+        <div class="resource-content-card" style="margin-bottom: 0;">
           <div class="resource-card-title">
             <span>📄</span>
             <span>${escapeHtml(item.title || '자료 이름 없음')}</span>
@@ -649,13 +670,6 @@ async function loadResources() {
   }).join('');
 }
 
-async function toggleResourceBookmark(id, currentColor, savedColor) {
-  const nextColor = (currentColor === 'none') ? (savedColor || 'pink') : 'none';
-  if (nextColor !== 'none') setMetaCache('resources', id, 'saved_color', nextColor);
-  setMetaCache('resources', id, 'bookmark_color', nextColor);
-  await supabase.from('resources').update({ bookmark_color: nextColor }).eq('id', id);
-  loadResources();
-}
 function startEditResource(id) { editingResourceId = id; loadResources(); }
 function cancelEditResource() { editingResourceId = null; loadResources(); }
 
@@ -673,11 +687,28 @@ async function saveEditResource(id) {
   setMetaCache('resources', id, 'saved_color', color);
   setMetaCache('resources', id, 'bookmark_color', color);
 
+  // 1차: 모든 필드 업데이트 시도
   let { error } = await supabase.from('resources').update({ 
     title: title, url: url, description: desc, author: author, bookmark_color: color 
   }).eq('id', id);
-  if (error) await supabase.from('resources').update({ title: title, url: url, description: desc }).eq('id', id);
+
+  // 2차: description / author 컬럼이 없을 때 400 에러 방지 (단계적 안전 저장)
+  if (error) {
+    let retry = await supabase.from('resources').update({ title: title, url: url, description: desc }).eq('id', id);
+    if (retry.error) {
+      await supabase.from('resources').update({ title: title, url: url }).eq('id', id);
+    }
+  }
+
   editingResourceId = null;
+  loadResources();
+}
+
+async function toggleResourceBookmark(id, currentColor, savedColor) {
+  const nextColor = (currentColor === 'none') ? (savedColor || 'pink') : 'none';
+  if (nextColor !== 'none') setMetaCache('resources', id, 'saved_color', nextColor);
+  setMetaCache('resources', id, 'bookmark_color', nextColor);
+  await supabase.from('resources').update({ bookmark_color: nextColor }).eq('id', id);
   loadResources();
 }
 
@@ -703,7 +734,7 @@ async function addResource() {
     const retry = await supabase.from('resources').insert([{ title: title, url: url, description: desc }]).select();
     data = retry.data;
   }
-  const newId = (data && data) ? data.id : (data ? data.id : null);
+  const newId = (data && data[0]) ? data[0].id : (data ? data.id : null);
   if (newId) {
     setMetaCache('resources', newId, 'author', author);
     setMetaCache('resources', newId, 'description', desc);
@@ -717,8 +748,49 @@ async function addResource() {
   urlInput.value = '';
   loadResources();
 }
+
 async function deleteResource(id) {
   if (!confirm('이 링크를 삭제할까요?')) return;
   await supabase.from('resources').delete().eq('id', id);
   loadResources();
 }
+
+// ==========================================
+// 8. 전역 함수 바인딩 (onclick 버튼 먹통 완벽 방지)
+// ==========================================
+window.switchTab = switchTab;
+window.toggleSort = toggleSort;
+window.setFilter = setFilter;
+window.setFilterDot = setFilterDot;
+window.selectNewIdeaColor = selectNewIdeaColor;
+window.selectNewResColor = selectNewResColor;
+window.selectEditColor = selectEditColor;
+
+window.addTask = addTask;
+window.handleTaskKey = handleTaskKey;
+window.toggleTask = toggleTask;
+window.toggleTaskStar = toggleTaskStar;
+window.startEditTask = startEditTask;
+window.cancelEditTask = cancelEditTask;
+window.saveEditTask = saveEditTask;
+window.deleteTask = deleteTask;
+
+window.addMeeting = addMeeting;
+window.toggleMeetingStar = toggleMeetingStar;
+window.startEditMeeting = startEditMeeting;
+window.cancelEditMeeting = cancelEditMeeting;
+window.saveEditMeeting = saveEditMeeting;
+window.deleteMeeting = deleteMeeting;
+
+window.addIdea = addIdea;
+window.startEditIdea = startEditIdea;
+window.cancelEditIdea = cancelEditIdea;
+window.saveEditIdea = saveEditIdea;
+window.deleteIdea = deleteIdea;
+
+window.addResource = addResource;
+window.toggleResourceBookmark = toggleResourceBookmark;
+window.startEditResource = startEditResource;
+window.cancelEditResource = cancelEditResource;
+window.saveEditResource = saveEditResource;
+window.deleteResource = deleteResource;

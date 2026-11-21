@@ -1,3 +1,11 @@
+/* 1. 맨 윗줄: 동글동글 부드러운 구글 '고운돋움' 폰트 불러오기 */
+@import url('[suspicious link removed]');
+
+body {
+  font-family: 'Ownglyph_mandoo', sans-serif;
+}
+
+
 :root {
   /* 🌸 화사한 톤다운 로즈 핑크 테마 */
   --bg: #fcf9fa;
@@ -460,32 +468,45 @@ textarea {
   transform: scale(1.2);
 }
 
+/* 부드럽고 자연스러운 감성 체크박스 */
 .custom-check {
   appearance: none;
   -webkit-appearance: none;
-  width: 17px;
-  height: 17px;
-  border: 1.5px solid var(--border-strong);
-  border-radius: 4px;
-  background-color: #fff;
+  width: 18px;
+  height: 18px;
+  border: 1.8px solid var(--border-strong);
+  border-radius: 6px; /* 살짝 둥글려서 투박함 제거 */
+  background-color: #ffffff;
   cursor: pointer;
   display: inline-grid;
   place-content: center;
-  transition: all 0.15s ease-in-out;
-  margin-top: 1px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+  margin-top: 1px;
 }
+
+/* 마우스 올렸을 때 은은한 핑크 반응 */
+.custom-check:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-soft);
+  transform: scale(1.05);
+}
+
+/* 체크 완료 시 부드러운 로즈 핑크 채움 */
 .custom-check:checked {
   background-color: var(--primary);
   border-color: var(--primary);
+  box-shadow: 0 2px 5px rgba(229, 140, 157, 0.35);
 }
+
+/* 체크 표시(V) 디자인 */
 .custom-check:checked::before {
   content: "";
-  width: 8px;
-  height: 5px;
-  border-left: 2px solid white;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid white;
   border-bottom: 2px solid white;
-  transform: rotate(-45deg) translate(1px, -1px);
+  transform: rotate(45deg) translate(-1px, -1px);
 }
 
 .styled-content-box {
@@ -498,7 +519,7 @@ textarea {
   border-radius: 4px !important;
   padding: 6px 8px !important;
   margin: 0 !important;
-  color: var(--rose-deep) !important;
+  color: var(--rose-medium) !important; /* 👈 탭 글씨 색상으로 통일! */
   font-size: 0.88rem !important;
   line-height: 1.35 !important;
   text-align: left !important;
@@ -517,7 +538,7 @@ textarea {
 .resource-card-title {
   font-size: 0.92rem;
   font-weight: 700;
-  color: var(--rose-deep);
+  color: var(--rose-medium); /* 👈 제목 톤 통일 */
   border-bottom: 1px dashed #ebd8dc;
   padding-bottom: 4px;
   margin-bottom: 5px;
@@ -525,9 +546,10 @@ textarea {
   align-items: center;
   gap: 5px;
 }
+
 .resource-card-desc {
   font-size: 0.86rem;
-  color: var(--rose-deep);
+  color: var(--rose-medium); /* 👈 세부 내용 톤 통일 */
   line-height: 1.35;
   white-space: pre-wrap;
   word-break: break-all;
@@ -601,4 +623,27 @@ textarea {
     border-radius: 9px;
   }
   .tab-content { padding: 22px 20px; }
+  /* ==========================================
+   4개 탭 기입창 및 소제목 색상 통일 (맨 아래 추가)
+   ========================================== */
+.tab-content h3 {
+  color: var(--rose-medium) !important;
+}
+
+.form-group label,
+.tab-content label {
+  color: var(--rose-medium) !important;
+}
+
+input[type="text"], 
+input[type="date"], 
+input[type="url"], 
+textarea {
+  color: var(--rose-medium) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #ba9fa6;
+}
 }
