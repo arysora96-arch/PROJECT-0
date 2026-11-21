@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --primary: #ff8da1; /* 옅은 파스텔 핑크 */
+      --primary: #ff8da1; /* 파스텔 핑크 */
       --primary-soft: #fff0f3;
       --bg: #faf7f8;
       --card-bg: #ffffff;
@@ -22,91 +22,95 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      padding: 24px 12px;
+      padding: 8px 6px;
       display: flex;
       justify-content: center;
     }
 
     .container {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1100px;
       background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(255, 141, 161, 0.12);
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(255, 141, 161, 0.08);
       overflow: hidden;
       border: 1px solid var(--border);
     }
 
+    /* 초슬림 헤더 */
     header {
-      padding: 28px 20px 18px;
+      padding: 10px 12px 8px;
       text-align: center;
       background: linear-gradient(180deg, #ffffff 0%, var(--primary-soft) 100%);
       border-bottom: 1px solid var(--border);
     }
     header h1 {
-      font-size: 1.6rem;
+      font-size: 1.15rem;
       color: #1a202c;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 5px;
     }
     header p {
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
     }
 
-    /* 상단 탭 */
+    /* 슬림 탭바 */
     .tab-bar {
       display: flex;
       background: #fdf2f4;
-      padding: 6px;
-      gap: 6px;
+      padding: 3px;
+      gap: 3px;
+      overflow-x: auto;
     }
     .tab-btn {
       flex: 1;
-      padding: 12px;
+      min-width: 75px;
+      padding: 7px 4px;
       border: none;
       background: none;
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #a0aec0;
-      border-radius: 12px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .tab-btn.active {
       background: white;
       color: var(--primary);
-      box-shadow: 0 2px 8px rgba(255, 141, 161, 0.2);
+      box-shadow: 0 1px 5px rgba(255, 141, 161, 0.16);
     }
 
     .tab-content {
       display: none;
-      padding: 24px 20px;
+      padding: 12px 10px;
     }
     .tab-content.active {
       display: block;
     }
 
-    /* 입력 요소 공통 */
+    /* 입력 요소 슬림화 */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 3px;
       color: #4a5568;
     }
     input[type="text"], input[type="date"], input[type="url"], textarea {
       width: 100%;
-      padding: 12px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 7px 10px;
+      border: 1.2px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.85rem;
       font-family: inherit;
       outline: none;
       background: #fff;
@@ -117,33 +121,32 @@
     }
     textarea {
       resize: vertical;
-      min-height: 80px;
+      min-height: 55px;
     }
 
-    /* 핑크 메인 버튼 */
+    /* 슬림 핑크 버튼 */
     .pink-btn {
       width: 100%;
-      padding: 13px;
+      padding: 8px 12px;
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
+      border-radius: 7px;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(255, 141, 161, 0.3);
+      box-shadow: 0 2px 6px rgba(255, 141, 161, 0.2);
     }
     .pink-btn:hover {
       filter: brightness(0.96);
-      transform: translateY(-1px);
     }
 
     .list-container {
-      margin-top: 22px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
     }
   </style>
 </head>
@@ -152,90 +155,86 @@
 <div class="container">
   <header>
     <h1>🌸 PROJECT-0</h1>
-    <p>2인 기획·개발 협업 관리 대시보드</p>
+    <p>2인 기획·개발 협업 대시보드</p>
   </header>
 
-  <!-- 상단 대문: 전체 프로젝트 로드맵 -->
-  <div style="background: white; border-radius: 16px; padding: 22px 28px; box-shadow: 0 4px 18px rgba(255, 183, 197, 0.25); border: 2px solid #ffd1dc; margin: 20px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px dashed #ffe4e9; padding-bottom: 10px;">
-      <span style="font-size: 1.15rem; font-weight: bold; color: #d85a7f; display: flex; align-items: center; gap: 8px;">
-        🗺️ 전체 프로젝트 로드맵
+  <!-- 🗺️ 초슬림 컴팩트 로드맵 (상단에 쏙 들어가는 사이즈) -->
+  <div style="background: white; border-radius: 10px; padding: 8px 10px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.15); border: 1.2px solid #ffd1dc; margin: 8px 8px 4px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px dashed #ffe4e9; padding-bottom: 4px;">
+      <span style="font-size: 0.82rem; font-weight: bold; color: #d85a7f; display: flex; align-items: center; gap: 4px;">
+        🗺️ 프로젝트 로드맵
       </span>
-      <span style="font-size: 0.88rem; background: #ffe4e9; color: #d85a7f; padding: 5px 12px; border-radius: 14px; font-weight: bold;">
-        현재 진행: STEP 2 진행 중 🚀
+      <span style="font-size: 0.7rem; background: #ffe4e9; color: #d85a7f; padding: 2px 8px; border-radius: 10px; font-weight: bold;">
+        STEP 2 진행 중 🚀
       </span>
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; overflow-x: auto;">
-      <div style="flex: 1; min-width: 170px; background: #f0fbf4; border: 2px solid #b7eec9; border-radius: 12px; padding: 14px 16px; text-align: center;">
-        <div style="font-size: 0.8rem; font-weight: bold; color: #27ae60; margin-bottom: 4px;">STEP 1 (완료 ✅)</div>
-        <div style="font-size: 1.05rem; font-weight: bold; color: #2d3436;">기반 환경 구축</div>
-        <div style="font-size: 0.82rem; color: #636e72; margin-top: 4px;">Vercel 배포 & 모바일 연동</div>
+    <!-- 4단계 가로 스크롤/바 (높이 최소화) -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; overflow-x: auto; padding-bottom: 2px;">
+      <div style="flex: 1; min-width: 95px; background: #f0fbf4; border: 1px solid #b7eec9; border-radius: 6px; padding: 5px 6px; text-align: center;">
+        <div style="font-size: 0.62rem; font-weight: bold; color: #27ae60;">STEP 1 ✅</div>
+        <div style="font-size: 0.75rem; font-weight: bold; color: #2d3436; margin-top: 1px;">기반 환경 구축</div>
       </div>
-      <span style="color: #ffb7c5; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
-      <div style="flex: 1.1; min-width: 180px; background: #fff0f3; border: 2px solid #ff8fa3; border-radius: 12px; padding: 16px 18px; text-align: center; box-shadow: 0 4px 12px rgba(216, 90, 127, 0.15);">
-        <div style="font-size: 0.82rem; font-weight: bold; color: #d85a7f; margin-bottom: 4px;">STEP 2 (진행 중 🚀)</div>
-        <div style="font-size: 1.15rem; font-weight: 800; color: #d85a7f;">협업 대시보드 확장</div>
-        <div style="font-size: 0.85rem; color: #7f5262; margin-top: 4px; font-weight: 500;">메뉴 탭 구성 & 실시간 기록</div>
+      <span style="color: #ffb7c5; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
+      <div style="flex: 1.1; min-width: 105px; background: #fff0f3; border: 1.2px solid #ff8fa3; border-radius: 6px; padding: 6px 6px; text-align: center; box-shadow: 0 1px 4px rgba(216, 90, 127, 0.12);">
+        <div style="font-size: 0.65rem; font-weight: bold; color: #d85a7f;">STEP 2 🚀</div>
+        <div style="font-size: 0.78rem; font-weight: 800; color: #d85a7f; margin-top: 1px;">협업 보드 확장</div>
       </div>
-      <span style="color: #ffd1dc; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
-      <div style="flex: 1; min-width: 170px; background: #fbfbfb; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; text-align: center;">
-        <div style="font-size: 0.8rem; font-weight: bold; color: #95a5a6; margin-bottom: 4px;">STEP 3 (예정)</div>
-        <div style="font-size: 1.05rem; font-weight: bold; color: #7f8c8d;">데이터 보관소</div>
-        <div style="font-size: 0.82rem; color: #95a5a6; margin-top: 4px;">녹화본 링크 & 자료 아카이빙</div>
+      <span style="color: #ffd1dc; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
+      <div style="flex: 1; min-width: 95px; background: #fbfbfb; border: 1px solid #e0e0e0; border-radius: 6px; padding: 5px 6px; text-align: center;">
+        <div style="font-size: 0.62rem; font-weight: bold; color: #95a5a6;">STEP 3</div>
+        <div style="font-size: 0.75rem; font-weight: bold; color: #7f8c8d; margin-top: 1px;">데이터 보관소</div>
       </div>
-      <span style="color: #eee; font-size: 1.5rem; font-weight: bold; user-select: none;">➜</span>
-      <div style="flex: 1; min-width: 170px; background: #fbfbfb; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; text-align: center;">
-        <div style="font-size: 0.8rem; font-weight: bold; color: #bdc3c7; margin-bottom: 4px;">STEP 4 (목표)</div>
-        <div style="font-size: 1.05rem; font-weight: bold; color: #95a5a6;">핵심 기능 개발</div>
-        <div style="font-size: 0.82rem; color: #bdc3c7; margin-top: 4px;">본격적인 기능 구현 및 테스트</div>
+      <span style="color: #eee; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
+      <div style="flex: 1; min-width: 95px; background: #fbfbfb; border: 1px solid #e0e0e0; border-radius: 6px; padding: 5px 6px; text-align: center;">
+        <div style="font-size: 0.62rem; font-weight: bold; color: #bdc3c7;">STEP 4</div>
+        <div style="font-size: 0.75rem; font-weight: bold; color: #95a5a6; margin-top: 1px;">핵심 기능 개발</div>
       </div>
     </div>
   </div>
 
   <!-- 🌸 탭 메뉴 바 -->
   <div class="tab-bar">
-    <button id="btn-t" class="tab-btn active" onclick="switchTab('tasks')">✅ 프로젝트 진행목록</button>
+    <button id="btn-t" class="tab-btn active" onclick="switchTab('tasks')">✅ 진행목록</button>
     <button id="btn-m" class="tab-btn" onclick="switchTab('meetings')">📋 회의록</button>
-    <button id="btn-i" class="tab-btn" onclick="switchTab('ideas')">💡 아이디어 / 메모</button>
-    <button id="btn-r" class="tab-btn" onclick="switchTab('resources')">📁 자료 & 녹화 링크</button>
+    <button id="btn-i" class="tab-btn" onclick="switchTab('ideas')">💡 아이디어</button>
+    <button id="btn-r" class="tab-btn" onclick="switchTab('resources')">📁 자료 링크</button>
   </div>
 
   <!-- 1. 프로젝트 진행목록 화면 -->
   <div id="tab-tasks" class="tab-content active">
-    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+    <div style="display: flex; gap: 5px; margin-bottom: 8px;">
       <input type="text" id="task-input" placeholder="새 작업을 입력하세요..." style="flex: 1;" onkeypress="handleTaskKey(event)">
-      <button class="pink-btn" style="width: 80px;" onclick="addTask()">추가</button>
+      <button class="pink-btn" style="width: 58px; padding: 7px 0;" onclick="addTask()">추가</button>
     </div>
     <div class="list-container" id="tasks-list"></div>
   </div>
 
-  <!-- 2. 회의록 탭 (결정사항 제거, 날짜+내용 순수 구조) -->
+  <!-- 2. 회의록 탭 -->
   <div id="tab-meetings" class="tab-content">
-    <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(255, 183, 197, 0.15); border: 1.5px solid #ffd1dc; margin-bottom: 20px;">
-      <h3 style="color: #d85a7f; margin: 0 0 12px 0; font-size: 1.05rem;">📝 회의록 작성</h3>
+    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
+      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">📝 회의록 작성</h3>
       <div class="form-group">
         <label for="m-date">회의 날짜</label>
         <input type="date" id="m-date">
       </div>
       <div class="form-group">
         <label for="m-content">회의 내용</label>
-        <textarea id="m-content" placeholder="오늘 통화/회의에서 나온 주요 내용을 자유롭게 적어보세요..."></textarea>
+        <textarea id="m-content" placeholder="통화/회의에서 나온 주요 내용을 간단히 적어보세요..."></textarea>
       </div>
-      <button class="pink-btn" onclick="addMeeting()">회의록 저장하기</button>
+      <button class="pink-btn" onclick="addMeeting()">회의록 저장</button>
     </div>
-
     <div class="list-container" id="meetings-list"></div>
   </div>
 
   <!-- 3. 아이디어 / 메모 탭 -->
   <div id="tab-ideas" class="tab-content">
-    <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(255, 183, 197, 0.15); border: 1.5px solid #ffd1dc; margin-bottom: 20px;">
-      <h3 style="color: #d85a7f; margin: 0 0 12px 0; font-size: 1.05rem;">💡 새로운 아이디어 메모</h3>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <input type="text" id="idea-title" placeholder="아이디어 제목 또는 핵심 키워드">
-        <textarea id="idea-desc" rows="2" placeholder="자유로운 생각, 아이디어 상세 메모를 적어주세요..."></textarea>
-        <button class="pink-btn" style="align-self: flex-end; padding: 8px 18px;" onclick="addIdea()">메모 남기기</button>
+    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
+      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">💡 아이디어 메모</h3>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <input type="text" id="idea-title" placeholder="아이디어 제목 또는 키워드">
+        <textarea id="idea-desc" rows="2" placeholder="자유로운 생각, 아이디어 상세 메모..."></textarea>
+        <button class="pink-btn" style="align-self: flex-end; width: auto; padding: 6px 14px;" onclick="addIdea()">메모 남기기</button>
       </div>
     </div>
     <div class="list-container" id="ideas-list"></div>
@@ -243,12 +242,12 @@
 
   <!-- 4. 자료 & 녹화 링크 탭 -->
   <div id="tab-resources" class="tab-content">
-    <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(255, 183, 197, 0.15); border: 1.5px solid #ffd1dc; margin-bottom: 20px;">
-      <h3 style="color: #d85a7f; margin: 0 0 12px 0; font-size: 1.05rem;">📁 자료 & 디스코드 녹화 링크 보관</h3>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <input type="text" id="res-title" placeholder="자료/영상 이름 (예: 1회차 회의 녹화본)" style="flex: 1; min-width: 200px;">
-        <input type="url" id="res-url" placeholder="공유 링크 URL (https://...)" style="flex: 1.5; min-width: 250px;">
-        <button class="pink-btn" style="padding: 8px 18px;" onclick="addResource()">링크 저장</button>
+    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
+      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">📁 자료 & 녹화 링크 보관</h3>
+      <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+        <input type="text" id="res-title" placeholder="자료 이름 (예: 1회차 녹화)" style="flex: 1; min-width: 130px;">
+        <input type="url" id="res-url" placeholder="공유 링크 (https://...)" style="flex: 1.4; min-width: 160px;">
+        <button class="pink-btn" style="width: auto; padding: 6px 14px;" onclick="addResource()">링크 저장</button>
       </div>
     </div>
     <div class="list-container" id="resources-list"></div>
@@ -263,11 +262,9 @@
   const SUPABASE_ANON_KEY = "sb_publishable_N-orkQ3J2ew4kxCLMmiYSQ_0ioDhbi5";
   window.supabase = window.supabase.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : supabase;
 
-  // 오늘 날짜 기본 세팅
   const mDateInput = document.getElementById('m-date');
   if (mDateInput) mDateInput.valueAsDate = new Date();
 
-  // 보안 글자 변환
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -280,10 +277,7 @@
     const allTabs = ['tasks', 'meetings', 'ideas', 'resources'];
     allTabs.forEach(t => {
       const el = document.getElementById('tab-' + t);
-      if (el) {
-        el.classList.remove('active');
-        el.style.display = 'none';
-      }
+      if (el) { el.classList.remove('active'); el.style.display = 'none'; }
     });
 
     const allBtns = ['btn-t', 'btn-m', 'btn-i', 'btn-r'];
@@ -293,10 +287,7 @@
     });
 
     const targetTab = document.getElementById('tab-' + type);
-    if (targetTab) {
-      targetTab.classList.add('active');
-      targetTab.style.display = 'block';
-    }
+    if (targetTab) { targetTab.classList.add('active'); targetTab.style.display = 'block'; }
 
     const btnMap = { 'tasks': 'btn-t', 'meetings': 'btn-m', 'ideas': 'btn-i', 'resources': 'btn-r' };
     const targetBtn = document.getElementById(btnMap[type]);
@@ -304,7 +295,7 @@
   };
 
   // ==========================================
-  // 3. 프로젝트 진행목록 (tasks 테이블: id, created_at, title, is_completed)
+  // 3. 프로젝트 진행목록 (tasks)
   // ==========================================
   let editingTaskId = null;
 
@@ -317,43 +308,38 @@
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error("작업 불러오기 오류:", error);
-      return;
-    }
+    if (error) { console.error("작업 불러오기 오류:", error); return; }
 
     if (!tasks || tasks.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">등록된 작업이 없습니다. 오늘 할 일을 추가해 보세요! 🚀</div>';
+      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 작업이 없습니다. 🚀</div>';
       return;
     }
 
     list.innerHTML = tasks.map(task => {
-      // 1) 수정 모드: 인라인 입력창 + 나란한 저장/취소 버튼
       if (editingTaskId === task.id) {
         return `
-          <div style="padding: 10px 14px; margin-bottom: 8px; background: #fffafb; border-radius: 10px; border: 1.5px solid #ff8fa3; display: flex; align-items: center; gap: 8px;">
-            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 1; padding: 6px 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">
-            <div style="display: flex; gap: 6px; flex-shrink: 0;">
-              <button onclick="saveEditTask(${task.id})" class="pink-btn" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 6px; white-space: nowrap;">저장</button>
-              <button onclick="cancelEditTask()" style="padding: 6px 14px; font-size: 0.85rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; white-space: nowrap;">취소</button>
+          <div style="padding: 6px 10px; margin-bottom: 4px; background: #fffafb; border-radius: 7px; border: 1.2px solid #ff8fa3; display: flex; align-items: center; gap: 5px;">
+            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 1; padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size: 0.8rem;">
+            <div style="display: flex; gap: 3px; flex-shrink: 0;">
+              <button onclick="saveEditTask(${task.id})" class="pink-btn" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 5px; width:auto; white-space: nowrap;">저장</button>
+              <button onclick="cancelEditTask()" style="padding: 4px 8px; font-size: 0.75rem; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; white-space: nowrap;">취소</button>
             </div>
           </div>
         `;
       }
 
-      // 2) 일반 모드: 체크박스 + 제목 + 가로 정렬된 수정/삭제 버튼
       const isDone = task.is_completed === true;
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 8px; background: white; border-radius: 10px; border: 1.5px solid #ffe4e9; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
-          <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
-            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)" style="cursor: pointer; width: 17px; height: 17px; accent-color: var(--primary);">
-            <span style="font-size: 0.95rem; color: ${isDone ? '#aaa' : '#333'}; text-decoration: ${isDone ? 'line-through' : 'none'}; word-break: break-all;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; margin-bottom: 5px; background: white; border-radius: 7px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
+          <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;">
+            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)" style="cursor: pointer; width: 14px; height: 14px; accent-color: var(--primary);">
+            <span style="font-size: 0.82rem; color: ${isDone ? '#aaa' : '#333'}; text-decoration: ${isDone ? 'line-through' : 'none'}; word-break: break-all;">
               ${escapeHtml(task.title || '')}
             </span>
           </div>
-          <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">수정</button>
-            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">삭제</button>
+          <div style="display: flex; gap: 4px; align-items: center; flex-shrink: 0;">
+            <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
@@ -366,15 +352,9 @@
   async function saveEditTask(id) {
     const input = document.getElementById(`edit-task-title-${id}`);
     const newTitle = input.value.trim();
-    if (!newTitle) {
-      alert('작업 내용을 입력해주세요!');
-      return;
-    }
+    if (!newTitle) { alert('작업 내용을 입력해주세요!'); return; }
     const { error } = await supabase.from('tasks').update({ title: newTitle }).eq('id', id);
-    if (error) {
-      alert("수정 실패: " + error.message);
-      return;
-    }
+    if (error) { alert("수정 실패: " + error.message); return; }
     editingTaskId = null;
     loadTasks();
   }
@@ -384,17 +364,12 @@
     const taskTitle = input.value.trim();
     if (!taskTitle) return;
     const { error } = await supabase.from('tasks').insert([{ title: taskTitle, is_completed: false }]);
-    if (error) {
-      alert("작업 추가 실패: " + error.message);
-      return;
-    }
+    if (error) { alert("작업 추가 실패: " + error.message); return; }
     input.value = '';
     loadTasks();
   }
 
-  function handleTaskKey(event) {
-    if (event.key === 'Enter') addTask();
-  }
+  function handleTaskKey(event) { if (event.key === 'Enter') addTask(); }
 
   async function toggleTask(id, status) {
     await supabase.from('tasks').update({ is_completed: status }).eq('id', id);
@@ -408,7 +383,7 @@
   }
 
   // ==========================================
-  // 4. 회의록 (meetings 테이블: id, created_at, meeting_date, content)
+  // 4. 회의록 (meetings)
   // ==========================================
   let editingMeetingId = null;
 
@@ -421,43 +396,37 @@
       .select('*')
       .order('meeting_date', { ascending: false });
 
-    if (error) {
-      console.error("회의록 불러오기 오류:", error);
-      return;
-    }
+    if (error) { console.error("회의록 불러오기 오류:", error); return; }
 
     if (!meetings || meetings.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">등록된 회의록이 없습니다. 첫 회의록을 작성해 보세요! 📝</div>';
+      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 회의록이 없습니다. 📝</div>';
       return;
     }
 
     list.innerHTML = meetings.map(m => {
-      // 1) 수정 모드
       if (editingMeetingId === m.id) {
         return `
-          <div style="padding: 16px; margin-bottom: 14px; background: #fffafb; border-radius: 12px; border: 1.5px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 회의록 수정</div>
-            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="padding: 6px 10px; border: 1.5px solid #ffd1dc; border-radius: 6px; margin-bottom: 8px;">
-            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 8px 10px; margin-bottom: 10px; border: 1.5px solid #ffd1dc; border-radius: 6px;">${escapeHtml(m.content || '')}</textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-              <button onclick="cancelEditMeeting()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
-              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; width: auto;">저장</button>
+          <div style="padding: 10px; margin-bottom: 8px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 회의록 수정</div>
+            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; margin-bottom: 5px; font-size:0.8rem;">
+            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 5px 6px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">${escapeHtml(m.content || '')}</textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 4px;">
+              <button onclick="cancelEditMeeting()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
+              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
 
-      // 2) 일반 카드 모드 (날짜 -> 내용 순수 배치, 불필요한 결정사항 상자 완전 제거)
       return `
-        <div style="position: relative; padding: 18px; margin-bottom: 14px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 1.05rem; margin-bottom: 8px;">
+        <div style="position: relative; padding: 10px 12px; margin-bottom: 8px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 0.88rem; margin-bottom: 4px;">
             📅 ${m.meeting_date || ''}
           </div>
-          <div style="color: #333; font-size: 0.95rem; white-space: pre-wrap; line-height: 1.5;">${escapeHtml(m.content || '')}</div>
-          
-          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px;">
-            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">수정</button>
-            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">삭제</button>
+          <div style="color: #333; font-size: 0.82rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(m.content || '')}</div>
+          <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
@@ -470,22 +439,9 @@
   async function saveEditMeeting(id) {
     const date = document.getElementById(`edit-m-date-${id}`).value;
     const content = document.getElementById(`edit-m-content-${id}`).value.trim();
-
-    if (!content) {
-      alert('회의 내용은 비워둘 수 없습니다!');
-      return;
-    }
-
-    const { error } = await supabase
-      .from('meetings')
-      .update({ meeting_date: date, content: content })
-      .eq('id', id);
-
-    if (error) {
-      alert("회의록 수정 실패: " + error.message);
-      return;
-    }
-
+    if (!content) { alert('회의 내용은 비워둘 수 없습니다!'); return; }
+    const { error } = await supabase.from('meetings').update({ meeting_date: date, content: content }).eq('id', id);
+    if (error) { alert("수정 실패: " + error.message); return; }
     editingMeetingId = null;
     loadMeetings();
   }
@@ -493,230 +449,213 @@
   async function addMeeting() {
     const date = document.getElementById('m-date').value;
     const content = document.getElementById('m-content').value.trim();
-
-    if (!content) {
-      alert('회의 내용을 입력해주세요!');
-      return;
-    }
-
-    const { error } = await supabase
-      .from('meetings')
-      .insert([{ meeting_date: date, content: content }]);
-
-    if (error) {
-      alert("회의록 저장 실패: " + error.message);
-      return;
-    }
-
+    if (!content) { alert('회의 내용을 입력해주세요!'); return; }
+    const { error } = await supabase.from('meetings').insert([{ meeting_date: date, content: content }]);
+    if (error) { alert("회의록 저장 실패: " + error.message); return; }
     document.getElementById('m-content').value = "";
     loadMeetings();
   }
 
   async function deleteMeeting(id) {
     if (!confirm("이 회의록을 삭제할까요?")) return;
-    const { error } = await supabase
-      .from('meetings')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      alert("회의록 삭제 실패: " + error.message);
-      return;
-    }
-
+    const { error } = await supabase.from('meetings').delete().eq('id', id);
+    if (error) { alert("삭제 실패: " + error.message); return; }
     loadMeetings();
   }
 
   // ==========================================
-  // 5. 아이디어 메모 (localStorage)
+  // 5. 아이디어 메모 (ideas)
   // ==========================================
-  let ideas = JSON.parse(localStorage.getItem('p0_ideas') || '[]');
-  let editingIdeaIdx = null;
+  let editingIdeaId = null;
 
-  function renderIdeas() {
+  async function loadIdeas() {
     const container = document.getElementById('ideas-list');
     if (!container) return;
-    if (ideas.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">아직 등록된 아이디어가 없습니다. 떠오르는 생각을 가볍게 남겨보세요! ✨</div>';
+
+    const { data: ideas, error } = await supabase
+      .from('ideas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error("아이디어 불러오기 오류:", error); return; }
+
+    if (!ideas || ideas.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 아이디어가 없습니다. ✨</div>';
       return;
     }
-    container.innerHTML = ideas.map((item, idx) => {
-      if (editingIdeaIdx === idx) {
+
+    container.innerHTML = ideas.map(item => {
+      if (editingIdeaId === item.id) {
         return `
-          <div style="padding: 16px; margin-bottom: 12px; background: #fffafb; border-radius: 12px; border: 1.5px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 아이디어 수정 중</div>
-            <input type="text" id="edit-idea-title-${idx}" value="${escapeHtml(item.title)}" style="width: 100%; box-sizing: border-box; padding: 8px 12px; margin-bottom: 8px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
-            <textarea id="edit-idea-desc-${idx}" rows="2" style="width: 100%; box-sizing: border-box; padding: 8px 12px; margin-bottom: 10px; border: 1.5px solid #ffd1dc; border-radius: 8px;">${escapeHtml(item.desc)}</textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-              <button onclick="cancelEditIdea()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
-              <button onclick="saveEditIdea(${idx})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; width: auto;">저장</button>
+          <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 아이디어 수정 중</div>
+            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
+            <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">${escapeHtml(item.description || '')}</textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 4px;">
+              <button onclick="cancelEditIdea()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
+              <button onclick="saveEditIdea(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
+
+      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString('ko-KR', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+
       return `
-        <div style="position: relative; padding: 16px; margin-bottom: 12px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 1rem; margin-bottom: 6px;">💡 ${escapeHtml(item.title)}</div>
-          <div style="color: #444; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(item.desc)}</div>
-          <div style="font-size: 0.75rem; color: #aaa; margin-top: 8px;">${item.date}</div>
-          <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-            <button onclick="startEditIdea(${idx})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold;">수정</button>
-            <button onclick="deleteIdea(${idx})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold;">삭제</button>
+        <div style="position: relative; padding: 10px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 0.85rem; margin-bottom: 3px;">💡 ${escapeHtml(item.title || '')}</div>
+          <div style="color: #444; font-size: 0.8rem; white-space: pre-wrap; line-height: 1.35;">${escapeHtml(item.description || '')}</div>
+          <div style="font-size: 0.68rem; color: #aaa; margin-top: 5px;">${dateStr}</div>
+          <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+            <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold;">수정</button>
+            <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold;">삭제</button>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  function addIdea() {
+  function startEditIdea(id) { editingIdeaId = id; loadIdeas(); }
+  function cancelEditIdea() { editingIdeaId = null; loadIdeas(); }
+
+  async function saveEditIdea(id) {
+    const title = document.getElementById(`edit-idea-title-${id}`).value.trim();
+    const desc = document.getElementById(`edit-idea-desc-${id}`).value.trim();
+    if (!title) { alert('아이디어 제목은 비워둘 수 없습니다!'); return; }
+    const { error } = await supabase.from('ideas').update({ title: title, description: desc }).eq('id', id);
+    if (error) { alert("수정 실패: " + error.message); return; }
+    editingIdeaId = null;
+    loadIdeas();
+  }
+
+  async function addIdea() {
     const titleInput = document.getElementById('idea-title');
     const descInput = document.getElementById('idea-desc');
     const title = titleInput.value.trim();
     const desc = descInput.value.trim();
-    if (!title) {
-      alert('아이디어 제목을 입력해주세요!');
-      return;
-    }
-    const now = new Date();
-    const dateStr = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-    ideas.unshift({ title, desc, date: dateStr });
-    localStorage.setItem('p0_ideas', JSON.stringify(ideas));
+    if (!title) { alert('아이디어 제목을 입력해주세요!'); return; }
+
+    const { error } = await supabase.from('ideas').insert([{ title: title, description: desc }]);
+    if (error) { alert("아이디어 저장 실패: " + error.message); return; }
+
     titleInput.value = '';
     descInput.value = '';
-    renderIdeas();
+    loadIdeas();
   }
 
-  function startEditIdea(idx) { editingIdeaIdx = idx; renderIdeas(); }
-  function cancelEditIdea() { editingIdeaIdx = null; renderIdeas(); }
-
-  function saveEditIdea(idx) {
-    const newTitle = document.getElementById(`edit-idea-title-${idx}`).value.trim();
-    const newDesc = document.getElementById(`edit-idea-desc-${idx}`).value.trim();
-    if (!newTitle) {
-      alert('아이디어 제목은 비워둘 수 없습니다!');
-      return;
-    }
-    ideas[idx].title = newTitle;
-    ideas[idx].desc = newDesc;
-    localStorage.setItem('p0_ideas', JSON.stringify(ideas));
-    editingIdeaIdx = null;
-    renderIdeas();
-  }
-
-  function deleteIdea(idx) {
-    if (confirm('이 아이디어를 삭제할까요?')) {
-      ideas.splice(idx, 1);
-      localStorage.setItem('p0_ideas', JSON.stringify(ideas));
-      renderIdeas();
-    }
+  async function deleteIdea(id) {
+    if (!confirm('이 아이디어를 삭제할까요?')) return;
+    const { error } = await supabase.from('ideas').delete().eq('id', id);
+    if (error) { alert("삭제 실패: " + error.message); return; }
+    loadIdeas();
   }
 
   // ==========================================
-  // 6. 자료 & 녹화 링크 (localStorage)
+  // 6. 자료 & 녹화 링크 (resources)
   // ==========================================
-  let resources = JSON.parse(localStorage.getItem('p0_resources') || '[]');
-  let editingResourceIdx = null;
+  let editingResourceId = null;
 
-  function renderResources() {
+  async function loadResources() {
     const container = document.getElementById('resources-list');
     if (!container) return;
-    if (resources.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">아직 저장된 링크가 없습니다. 디스코드 녹화 링크나 드라이브 주소를 보관해 보세요! 📁</div>';
+
+    const { data: resources, error } = await supabase
+      .from('resources')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error("자료 목록 불러오기 오류:", error); return; }
+
+    if (!resources || resources.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">저장된 링크가 없습니다. 📁</div>';
       return;
     }
-    container.innerHTML = resources.map((item, idx) => {
-      if (editingResourceIdx === idx) {
+
+    container.innerHTML = resources.map(item => {
+      if (editingResourceId === item.id) {
         return `
-          <div style="padding: 16px; margin-bottom: 12px; background: #fffafb; border-radius: 12px; border: 1.5px solid #ff8fa3; box-shadow: 0 4px 12px rgba(255,143,163,0.15);">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 8px; font-size: 0.95rem;">✏️ 링크 정보 수정 중</div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-              <input type="text" id="edit-res-title-${idx}" value="${escapeHtml(item.title)}" style="flex: 1; min-width: 180px; padding: 8px 12px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
-              <input type="url" id="edit-res-url-${idx}" value="${escapeHtml(item.url)}" style="flex: 1.5; min-width: 220px; padding: 8px 12px; border: 1.5px solid #ffd1dc; border-radius: 8px;">
+          <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 링크 정보 수정 중</div>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px;">
+              <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" style="flex: 1; min-width: 120px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
+              <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" style="flex: 1.4; min-width: 150px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-              <button onclick="cancelEditResource()" style="padding: 6px 14px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">취소</button>
-              <button onclick="saveEditResource(${idx})" class="pink-btn" style="padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; width: auto;">저장</button>
+            <div style="display: flex; justify-content: flex-end; gap: 4px;">
+              <button onclick="cancelEditResource()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
+              <button onclick="saveEditResource(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
+
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px; background: white; border-radius: 12px; border: 1.5px solid #ffe4e9; flex-wrap: nowrap; gap: 12px; box-shadow: 0 2px 6px rgba(255,183,197,0.1);">
-          <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
-            <span style="font-size: 1.3rem; flex-shrink: 0;">🎬</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; flex-wrap: nowrap; gap: 8px; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+            <span style="font-size: 1rem; flex-shrink: 0;">🎬</span>
             <div style="min-width: 0; overflow: hidden;">
-              <div style="font-weight: bold; color: #333; font-size: 0.95rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                ${escapeHtml(item.title)}
+              <div style="font-weight: bold; color: #333; font-size: 0.82rem; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(item.title || '')}
               </div>
-              <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.85rem; text-decoration: underline; word-break: break-all; display: inline-block;">
-                ${escapeHtml(item.url)} ↗
+              <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.75rem; text-decoration: underline; word-break: break-all; display: inline-block;">
+                ${escapeHtml(item.url || '')} ↗
               </a>
             </div>
           </div>
-          <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditResource(${idx})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">수정</button>
-            <button onclick="deleteResource(${idx})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.85rem; font-weight: bold; padding: 4px;">삭제</button>
+          <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; flex-shrink: 0;">
+            <button onclick="startEditResource(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteResource(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  function addResource() {
+  function startEditResource(id) { editingResourceId = id; loadResources(); }
+  function cancelEditResource() { editingResourceId = null; loadResources(); }
+
+  async function saveEditResource(id) {
+    const title = document.getElementById(`edit-res-title-${id}`).value.trim();
+    let url = document.getElementById(`edit-res-url-${id}`).value.trim();
+    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요!'); return; }
+    if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+    const { error } = await supabase.from('resources').update({ title: title, url: url }).eq('id', id);
+    if (error) { alert("수정 실패: " + error.message); return; }
+    editingResourceId = null;
+    loadResources();
+  }
+
+  async function addResource() {
     const titleInput = document.getElementById('res-title');
     const urlInput = document.getElementById('res-url');
     const title = titleInput.value.trim();
     let url = urlInput.value.trim();
-    if (!title || !url) {
-      alert('자료 이름과 링크 URL을 모두 입력해주세요!');
-      return;
-    }
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-    resources.unshift({ title, url });
-    localStorage.setItem('p0_resources', JSON.stringify(resources));
+    if (!title || !url) { alert('자료 이름과 링크 URL을 모두 입력해주세요!'); return; }
+    if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+    const { error } = await supabase.from('resources').insert([{ title: title, url: url }]);
+    if (error) { alert("링크 저장 실패: " + error.message); return; }
+
     titleInput.value = '';
     urlInput.value = '';
-    renderResources();
+    loadResources();
   }
 
-  function startEditResource(idx) { editingResourceIdx = idx; renderResources(); }
-  function cancelEditResource() { editingResourceIdx = null; renderResources(); }
-
-  function saveEditResource(idx) {
-    const newTitle = document.getElementById(`edit-res-title-${idx}`).value.trim();
-    let newUrl = document.getElementById(`edit-res-url-${idx}`).value.trim();
-    if (!newTitle || !newUrl) {
-      alert('자료 이름과 링크 URL을 모두 입력해주세요!');
-      return;
-    }
-    if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-      newUrl = 'https://' + newUrl;
-    }
-    resources[idx].title = newTitle;
-    resources[idx].url = newUrl;
-    localStorage.setItem('p0_resources', JSON.stringify(resources));
-    editingResourceIdx = null;
-    renderResources();
-  }
-
-  function deleteResource(idx) {
-    if (confirm('이 링크를 삭제할까요?')) {
-      resources.splice(idx, 1);
-      localStorage.setItem('p0_resources', JSON.stringify(resources));
-      renderResources();
-    }
+  async function deleteResource(id) {
+    if (!confirm('이 링크를 삭제할까요?')) return;
+    const { error } = await supabase.from('resources').delete().eq('id', id);
+    if (error) { alert("삭제 실패: " + error.message); return; }
+    loadResources();
   }
 
   // ==========================================
-  // 7. 앱 시작 시 초기 실행
+  // 7. 앱 시작 시 데이터 로드
   // ==========================================
   switchTab('tasks');
   loadTasks();
   loadMeetings();
-  renderIdeas();
-  renderResources();
+  loadIdeas();
+  loadResources();
 </script>
 
 </body>
