@@ -37,7 +37,7 @@
       border: 1px solid var(--border);
     }
 
-    /* 초슬림 헤더 */
+    /* 헤더 (모바일 기본: 슬림) */
     header {
       padding: 10px 12px 8px;
       text-align: center;
@@ -58,7 +58,77 @@
       color: var(--text-muted);
     }
 
-    /* 슬림 탭바 */
+    /* 🗺️ 로드맵 (모바일 기본: 초슬림) */
+    .roadmap-card {
+      background: white;
+      border-radius: 10px;
+      padding: 8px 10px;
+      box-shadow: 0 1px 6px rgba(255, 183, 197, 0.15);
+      border: 1.2px solid #ffd1dc;
+      margin: 8px 8px 4px;
+    }
+    .roadmap-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      border-bottom: 1px dashed #ffe4e9;
+      padding-bottom: 4px;
+    }
+    .roadmap-title {
+      font-size: 0.82rem;
+      font-weight: bold;
+      color: #d85a7f;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .roadmap-badge {
+      font-size: 0.7rem;
+      background: #ffe4e9;
+      color: #d85a7f;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .roadmap-steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .step-box {
+      flex: 1;
+      min-width: 95px;
+      border-radius: 6px;
+      padding: 5px 6px;
+      text-align: center;
+    }
+    .step-arrow {
+      color: #ffd1dc;
+      font-size: 0.75rem;
+      font-weight: bold;
+      user-select: none;
+    }
+    .step-label {
+      font-size: 0.62rem;
+      font-weight: bold;
+    }
+    .step-name {
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-top: 1px;
+    }
+    .step-desc {
+      display: none; /* 모바일에서는 숨겨서 슬림 유지 */
+      font-size: 0.7rem;
+      color: #718096;
+      margin-top: 2px;
+    }
+
+    /* 탭 바 (모바일 기본) */
     .tab-bar {
       display: flex;
       background: #fdf2f4;
@@ -94,7 +164,7 @@
       display: block;
     }
 
-    /* 입력 요소 슬림화 */
+    /* 입력 요소 */
     .form-group {
       margin-bottom: 8px;
     }
@@ -124,7 +194,7 @@
       min-height: 55px;
     }
 
-    /* 슬림 핑크 버튼 */
+    /* 핑크 메인 버튼 */
     .pink-btn {
       width: 100%;
       padding: 8px 12px;
@@ -148,6 +218,89 @@
       flex-direction: column;
       gap: 6px;
     }
+
+    /* ================================================= */
+    /* 🖥️ PC / 웹 화면 전용 스타일 (너비 768px 이상일 때 자동 확대) */
+    /* ================================================= */
+    @media (min-width: 768px) {
+      body {
+        padding: 24px 16px;
+      }
+      .container {
+        border-radius: 18px;
+      }
+      header {
+        padding: 20px 20px 14px;
+      }
+      header h1 {
+        font-size: 1.45rem;
+      }
+      header p {
+        font-size: 0.88rem;
+      }
+
+      /* 🗺️ PC에서 시원시원해지는 로드맵 */
+      .roadmap-card {
+        padding: 16px 20px;
+        margin: 14px 16px 8px;
+        border-radius: 14px;
+      }
+      .roadmap-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+      }
+      .roadmap-title {
+        font-size: 1.05rem;
+      }
+      .roadmap-badge {
+        font-size: 0.82rem;
+        padding: 4px 12px;
+        border-radius: 14px;
+      }
+      .roadmap-steps {
+        gap: 10px;
+      }
+      .step-box {
+        min-width: 140px;
+        padding: 12px 14px;
+        border-radius: 10px;
+      }
+      .step-label {
+        font-size: 0.72rem;
+      }
+      .step-name {
+        font-size: 0.95rem;
+        margin-top: 3px;
+      }
+      .step-desc {
+        display: block; /* PC에서는 상세 설명도 친절하게 표시 */
+      }
+      .step-arrow {
+        font-size: 1.1rem;
+      }
+
+      /* 탭 및 내용 확장 */
+      .tab-bar {
+        padding: 5px;
+        gap: 5px;
+      }
+      .tab-btn {
+        padding: 10px 8px;
+        font-size: 0.92rem;
+        border-radius: 10px;
+      }
+      .tab-content {
+        padding: 20px 18px;
+      }
+      input[type="text"], input[type="date"], input[type="url"], textarea {
+        padding: 9px 12px;
+        font-size: 0.92rem;
+      }
+      .pink-btn {
+        padding: 10px 16px;
+        font-size: 0.92rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -158,37 +311,36 @@
     <p>2인 기획·개발 협업 대시보드</p>
   </header>
 
-  <!-- 🗺️ 초슬림 컴팩트 로드맵 (상단에 쏙 들어가는 사이즈) -->
-  <div style="background: white; border-radius: 10px; padding: 8px 10px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.15); border: 1.2px solid #ffd1dc; margin: 8px 8px 4px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px dashed #ffe4e9; padding-bottom: 4px;">
-      <span style="font-size: 0.82rem; font-weight: bold; color: #d85a7f; display: flex; align-items: center; gap: 4px;">
-        🗺️ 프로젝트 로드맵
-      </span>
-      <span style="font-size: 0.7rem; background: #ffe4e9; color: #d85a7f; padding: 2px 8px; border-radius: 10px; font-weight: bold;">
-        STEP 2 진행 중 🚀
-      </span>
+  <!-- 🗺️ 반응형 로드맵 (모바일은 슬림, PC는 큼직) -->
+  <div class="roadmap-card">
+    <div class="roadmap-header">
+      <span class="roadmap-title">🗺️ 프로젝트 로드맵</span>
+      <span class="roadmap-badge">STEP 2 진행 중 🚀</span>
     </div>
 
-    <!-- 4단계 가로 스크롤/바 (높이 최소화) -->
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; overflow-x: auto; padding-bottom: 2px;">
-      <div style="flex: 1; min-width: 95px; background: #f0fbf4; border: 1px solid #b7eec9; border-radius: 6px; padding: 5px 6px; text-align: center;">
-        <div style="font-size: 0.62rem; font-weight: bold; color: #27ae60;">STEP 1 ✅</div>
-        <div style="font-size: 0.75rem; font-weight: bold; color: #2d3436; margin-top: 1px;">기반 환경 구축</div>
+    <div class="roadmap-steps">
+      <div class="step-box" style="background: #f0fbf4; border: 1.2px solid #b7eec9;">
+        <div class="step-label" style="color: #27ae60;">STEP 1 ✅</div>
+        <div class="step-name" style="color: #2d3436;">기반 환경 구축</div>
+        <div class="step-desc">배포 & 모바일 연동</div>
       </div>
-      <span style="color: #ffb7c5; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
-      <div style="flex: 1.1; min-width: 105px; background: #fff0f3; border: 1.2px solid #ff8fa3; border-radius: 6px; padding: 6px 6px; text-align: center; box-shadow: 0 1px 4px rgba(216, 90, 127, 0.12);">
-        <div style="font-size: 0.65rem; font-weight: bold; color: #d85a7f;">STEP 2 🚀</div>
-        <div style="font-size: 0.78rem; font-weight: 800; color: #d85a7f; margin-top: 1px;">협업 보드 확장</div>
+      <span class="step-arrow" style="color: #ffb7c5;">➜</span>
+      <div class="step-box" style="background: #fff0f3; border: 1.5px solid #ff8fa3; box-shadow: 0 2px 6px rgba(216,90,127,0.12);">
+        <div class="step-label" style="color: #d85a7f;">STEP 2 🚀</div>
+        <div class="step-name" style="color: #d85a7f; font-weight: 800;">협업 보드 확장</div>
+        <div class="step-desc" style="color: #7f5262;">메뉴 탭 & 실시간 기록</div>
       </div>
-      <span style="color: #ffd1dc; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
-      <div style="flex: 1; min-width: 95px; background: #fbfbfb; border: 1px solid #e0e0e0; border-radius: 6px; padding: 5px 6px; text-align: center;">
-        <div style="font-size: 0.62rem; font-weight: bold; color: #95a5a6;">STEP 3</div>
-        <div style="font-size: 0.75rem; font-weight: bold; color: #7f8c8d; margin-top: 1px;">데이터 보관소</div>
+      <span class="step-arrow">➜</span>
+      <div class="step-box" style="background: #fbfbfb; border: 1px solid #e0e0e0;">
+        <div class="step-label" style="color: #95a5a6;">STEP 3</div>
+        <div class="step-name" style="color: #7f8c8d;">데이터 보관소</div>
+        <div class="step-desc">자료 & 영상 아카이빙</div>
       </div>
-      <span style="color: #eee; font-size: 0.75rem; font-weight: bold; user-select: none;">›</span>
-      <div style="flex: 1; min-width: 95px; background: #fbfbfb; border: 1px solid #e0e0e0; border-radius: 6px; padding: 5px 6px; text-align: center;">
-        <div style="font-size: 0.62rem; font-weight: bold; color: #bdc3c7;">STEP 4</div>
-        <div style="font-size: 0.75rem; font-weight: bold; color: #95a5a6; margin-top: 1px;">핵심 기능 개발</div>
+      <span class="step-arrow" style="color: #eee;">➜</span>
+      <div class="step-box" style="background: #fbfbfb; border: 1px solid #e0e0e0;">
+        <div class="step-label" style="color: #bdc3c7;">STEP 4</div>
+        <div class="step-name" style="color: #95a5a6;">핵심 기능 개발</div>
+        <div class="step-desc">본격 기능 구현·테스트</div>
       </div>
     </div>
   </div>
@@ -203,17 +355,17 @@
 
   <!-- 1. 프로젝트 진행목록 화면 -->
   <div id="tab-tasks" class="tab-content active">
-    <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+    <div style="display: flex; gap: 6px; margin-bottom: 10px;">
       <input type="text" id="task-input" placeholder="새 작업을 입력하세요..." style="flex: 1;" onkeypress="handleTaskKey(event)">
-      <button class="pink-btn" style="width: 58px; padding: 7px 0;" onclick="addTask()">추가</button>
+      <button class="pink-btn" style="width: auto; padding: 7px 16px;" onclick="addTask()">추가</button>
     </div>
     <div class="list-container" id="tasks-list"></div>
   </div>
 
   <!-- 2. 회의록 탭 -->
   <div id="tab-meetings" class="tab-content">
-    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
-      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">📝 회의록 작성</h3>
+    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
+      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">📝 회의록 작성</h3>
       <div class="form-group">
         <label for="m-date">회의 날짜</label>
         <input type="date" id="m-date">
@@ -229,12 +381,12 @@
 
   <!-- 3. 아이디어 / 메모 탭 -->
   <div id="tab-ideas" class="tab-content">
-    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
-      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">💡 아이디어 메모</h3>
-      <div style="display: flex; flex-direction: column; gap: 5px;">
+    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
+      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">💡 아이디어 메모</h3>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
         <input type="text" id="idea-title" placeholder="아이디어 제목 또는 키워드">
         <textarea id="idea-desc" rows="2" placeholder="자유로운 생각, 아이디어 상세 메모..."></textarea>
-        <button class="pink-btn" style="align-self: flex-end; width: auto; padding: 6px 14px;" onclick="addIdea()">메모 남기기</button>
+        <button class="pink-btn" style="align-self: flex-end; width: auto; padding: 7px 18px;" onclick="addIdea()">메모 남기기</button>
       </div>
     </div>
     <div class="list-container" id="ideas-list"></div>
@@ -242,12 +394,12 @@
 
   <!-- 4. 자료 & 녹화 링크 탭 -->
   <div id="tab-resources" class="tab-content">
-    <div style="background: white; border-radius: 10px; padding: 10px; box-shadow: 0 1px 5px rgba(255, 183, 197, 0.1); border: 1.2px solid #ffd1dc; margin-bottom: 10px;">
-      <h3 style="color: #d85a7f; margin: 0 0 6px 0; font-size: 0.88rem;">📁 자료 & 녹화 링크 보관</h3>
-      <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-        <input type="text" id="res-title" placeholder="자료 이름 (예: 1회차 녹화)" style="flex: 1; min-width: 130px;">
-        <input type="url" id="res-url" placeholder="공유 링크 (https://...)" style="flex: 1.4; min-width: 160px;">
-        <button class="pink-btn" style="width: auto; padding: 6px 14px;" onclick="addResource()">링크 저장</button>
+    <div style="background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(255, 183, 197, 0.12); border: 1.2px solid #ffd1dc; margin-bottom: 12px;">
+      <h3 style="color: #d85a7f; margin: 0 0 8px 0; font-size: 0.92rem;">📁 자료 & 녹화 링크 보관</h3>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <input type="text" id="res-title" placeholder="자료 이름 (예: 1회차 녹화)" style="flex: 1; min-width: 140px;">
+        <input type="url" id="res-url" placeholder="공유 링크 (https://...)" style="flex: 1.5; min-width: 180px;">
+        <button class="pink-btn" style="width: auto; padding: 7px 18px;" onclick="addResource()">링크 저장</button>
       </div>
     </div>
     <div class="list-container" id="resources-list"></div>
@@ -311,18 +463,18 @@
     if (error) { console.error("작업 불러오기 오류:", error); return; }
 
     if (!tasks || tasks.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 작업이 없습니다. 🚀</div>';
+      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 작업이 없습니다. 🚀</div>';
       return;
     }
 
     list.innerHTML = tasks.map(task => {
       if (editingTaskId === task.id) {
         return `
-          <div style="padding: 6px 10px; margin-bottom: 4px; background: #fffafb; border-radius: 7px; border: 1.2px solid #ff8fa3; display: flex; align-items: center; gap: 5px;">
-            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 1; padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size: 0.8rem;">
-            <div style="display: flex; gap: 3px; flex-shrink: 0;">
-              <button onclick="saveEditTask(${task.id})" class="pink-btn" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 5px; width:auto; white-space: nowrap;">저장</button>
-              <button onclick="cancelEditTask()" style="padding: 4px 8px; font-size: 0.75rem; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; white-space: nowrap;">취소</button>
+          <div style="padding: 7px 10px; margin-bottom: 5px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3; display: flex; align-items: center; gap: 6px;">
+            <input type="text" id="edit-task-title-${task.id}" value="${escapeHtml(task.title || '')}" style="flex: 1; padding: 5px 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+            <div style="display: flex; gap: 4px; flex-shrink: 0;">
+              <button onclick="saveEditTask(${task.id})" class="pink-btn" style="padding: 5px 10px; font-size: 0.78rem; border-radius: 6px; width:auto; white-space: nowrap;">저장</button>
+              <button onclick="cancelEditTask()" style="padding: 5px 10px; font-size: 0.78rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; white-space: nowrap;">취소</button>
             </div>
           </div>
         `;
@@ -330,16 +482,16 @@
 
       const isDone = task.is_completed === true;
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; margin-bottom: 5px; background: white; border-radius: 7px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
-          <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;">
-            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)" style="cursor: pointer; width: 14px; height: 14px; accent-color: var(--primary);">
-            <span style="font-size: 0.82rem; color: ${isDone ? '#aaa' : '#333'}; text-decoration: ${isDone ? 'line-through' : 'none'}; word-break: break-all;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin-bottom: 5px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)" style="cursor: pointer; width: 15px; height: 15px; accent-color: var(--primary);">
+            <span style="font-size: 0.88rem; color: ${isDone ? '#aaa' : '#333'}; text-decoration: ${isDone ? 'line-through' : 'none'}; word-break: break-all;">
               ${escapeHtml(task.title || '')}
             </span>
           </div>
-          <div style="display: flex; gap: 4px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
+          <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+            <button onclick="startEditTask(${task.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
@@ -399,7 +551,7 @@
     if (error) { console.error("회의록 불러오기 오류:", error); return; }
 
     if (!meetings || meetings.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 회의록이 없습니다. 📝</div>';
+      list.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 회의록이 없습니다. 📝</div>';
       return;
     }
 
@@ -407,26 +559,26 @@
       if (editingMeetingId === m.id) {
         return `
           <div style="padding: 10px; margin-bottom: 8px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 회의록 수정</div>
-            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; margin-bottom: 5px; font-size:0.8rem;">
-            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 5px 6px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">${escapeHtml(m.content || '')}</textarea>
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.85rem;">✏️ 회의록 수정</div>
+            <input type="date" id="edit-m-date-${m.id}" value="${m.meeting_date || ''}" style="padding: 4px 6px; border: 1px solid #ffd1dc; border-radius: 5px; margin-bottom: 5px; font-size:0.82rem;">
+            <textarea id="edit-m-content-${m.id}" rows="3" placeholder="회의 내용" style="width: 100%; box-sizing: border-box; padding: 5px 6px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">${escapeHtml(m.content || '')}</textarea>
             <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditMeeting()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
-              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
+              <button onclick="cancelEditMeeting()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
+              <button onclick="saveEditMeeting(${m.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
 
       return `
-        <div style="position: relative; padding: 10px 12px; margin-bottom: 8px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 0.88rem; margin-bottom: 4px;">
+        <div style="position: relative; padding: 12px 14px; margin-bottom: 8px; background: white; border-radius: 10px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 0.92rem; margin-bottom: 4px;">
             📅 ${m.meeting_date || ''}
           </div>
-          <div style="color: #333; font-size: 0.82rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(m.content || '')}</div>
-          <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
+          <div style="color: #333; font-size: 0.86rem; white-space: pre-wrap; line-height: 1.45;">${escapeHtml(m.content || '')}</div>
+          <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 4px;">
+            <button onclick="startEditMeeting(${m.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteMeeting(${m.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
@@ -480,7 +632,7 @@
     if (error) { console.error("아이디어 불러오기 오류:", error); return; }
 
     if (!ideas || ideas.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">등록된 아이디어가 없습니다. ✨</div>';
+      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">등록된 아이디어가 없습니다. ✨</div>';
       return;
     }
 
@@ -488,12 +640,12 @@
       if (editingIdeaId === item.id) {
         return `
           <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 아이디어 수정 중</div>
-            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
-            <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">${escapeHtml(item.description || '')}</textarea>
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.82rem;">✏️ 아이디어 수정 중</div>
+            <input type="text" id="edit-idea-title-${item.id}" value="${escapeHtml(item.title || '')}" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 5px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
+            <textarea id="edit-idea-desc-${item.id}" rows="2" style="width: 100%; box-sizing: border-box; padding: 5px 8px; margin-bottom: 6px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">${escapeHtml(item.description || '')}</textarea>
             <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditIdea()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
-              <button onclick="saveEditIdea(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
+              <button onclick="cancelEditIdea()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
+              <button onclick="saveEditIdea(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
             </div>
           </div>
         `;
@@ -502,13 +654,13 @@
       const dateStr = item.created_at ? new Date(item.created_at).toLocaleString('ko-KR', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
 
       return `
-        <div style="position: relative; padding: 10px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
-          <div style="font-weight: bold; color: #d85a7f; font-size: 0.85rem; margin-bottom: 3px;">💡 ${escapeHtml(item.title || '')}</div>
-          <div style="color: #444; font-size: 0.8rem; white-space: pre-wrap; line-height: 1.35;">${escapeHtml(item.description || '')}</div>
-          <div style="font-size: 0.68rem; color: #aaa; margin-top: 5px;">${dateStr}</div>
+        <div style="position: relative; padding: 10px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
+          <div style="font-weight: bold; color: #d85a7f; font-size: 0.88rem; margin-bottom: 3px;">💡 ${escapeHtml(item.title || '')}</div>
+          <div style="color: #444; font-size: 0.82rem; white-space: pre-wrap; line-height: 1.4;">${escapeHtml(item.description || '')}</div>
+          <div style="font-size: 0.7rem; color: #aaa; margin-top: 5px;">${dateStr}</div>
           <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-            <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold;">수정</button>
-            <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold;">삭제</button>
+            <button onclick="startEditIdea(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold;">수정</button>
+            <button onclick="deleteIdea(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold;">삭제</button>
           </div>
         </div>
       `;
@@ -567,7 +719,7 @@
     if (error) { console.error("자료 목록 불러오기 오류:", error); return; }
 
     if (!resources || resources.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.8rem;">저장된 링크가 없습니다. 📁</div>';
+      container.innerHTML = '<div style="text-align:center; padding:12px; color:#aaa; font-size:0.85rem;">저장된 링크가 없습니다. 📁</div>';
       return;
     }
 
@@ -575,35 +727,35 @@
       if (editingResourceId === item.id) {
         return `
           <div style="padding: 10px; margin-bottom: 6px; background: #fffafb; border-radius: 8px; border: 1.2px solid #ff8fa3;">
-            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.8rem;">✏️ 링크 정보 수정 중</div>
+            <div style="font-weight: bold; color: #d85a7f; margin-bottom: 4px; font-size: 0.82rem;">✏️ 링크 정보 수정 중</div>
             <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px;">
-              <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" style="flex: 1; min-width: 120px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
-              <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" style="flex: 1.4; min-width: 150px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.8rem;">
+              <input type="text" id="edit-res-title-${item.id}" value="${escapeHtml(item.title || '')}" style="flex: 1; min-width: 120px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
+              <input type="url" id="edit-res-url-${item.id}" value="${escapeHtml(item.url || '')}" style="flex: 1.4; min-width: 150px; padding: 4px 8px; border: 1px solid #ffd1dc; border-radius: 5px; font-size:0.82rem;">
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 4px;">
-              <button onclick="cancelEditResource()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">취소</button>
-              <button onclick="saveEditResource(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; width: auto;">저장</button>
+              <button onclick="cancelEditResource()" style="padding: 4px 10px; border: 1px solid #ccc; background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem;">취소</button>
+              <button onclick="saveEditResource(${item.id})" class="pink-btn" style="padding: 4px 10px; border-radius: 5px; font-size: 0.78rem; width: auto;">저장</button>
             </div>
           </div>
         `;
       }
 
       return `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1px solid #ffe4e9; flex-wrap: nowrap; gap: 8px; box-shadow: 0 1px 3px rgba(255,183,197,0.06);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin-bottom: 6px; background: white; border-radius: 8px; border: 1.2px solid #ffe4e9; flex-wrap: nowrap; gap: 8px; box-shadow: 0 1px 4px rgba(255,183,197,0.06);">
           <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-            <span style="font-size: 1rem; flex-shrink: 0;">🎬</span>
+            <span style="font-size: 1.05rem; flex-shrink: 0;">🎬</span>
             <div style="min-width: 0; overflow: hidden;">
-              <div style="font-weight: bold; color: #333; font-size: 0.82rem; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              <div style="font-weight: bold; color: #333; font-size: 0.85rem; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 ${escapeHtml(item.title || '')}
               </div>
-              <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.75rem; text-decoration: underline; word-break: break-all; display: inline-block;">
+              <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" style="color: #d85a7f; font-size: 0.78rem; text-decoration: underline; word-break: break-all; display: inline-block;">
                 ${escapeHtml(item.url || '')} ↗
               </a>
             </div>
           </div>
           <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; flex-shrink: 0;">
-            <button onclick="startEditResource(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">수정</button>
-            <button onclick="deleteResource(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.75rem; font-weight: bold; padding: 2px;">삭제</button>
+            <button onclick="startEditResource(${item.id})" style="background: none; border: none; color: #d85a7f; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">수정</button>
+            <button onclick="deleteResource(${item.id})" style="background: none; border: none; color: #ff8fa3; cursor: pointer; font-size: 0.78rem; font-weight: bold; padding: 2px;">삭제</button>
           </div>
         </div>
       `;
